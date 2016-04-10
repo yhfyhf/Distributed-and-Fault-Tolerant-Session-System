@@ -3,6 +3,8 @@ package session;
 import group.Server;
 
 import javax.servlet.http.Cookie;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
@@ -26,15 +28,16 @@ public class Session {
     private Date expireAt;
     private List<Server> locationMetadata;   // 可以把改为List<String>
 
-    public Session() {
+    public Session() throws UnknownHostException {
         this(Utils.generateSessionId());
     }
 
-    public Session(String sessionId) {
+    public Session(String sessionId) throws UnknownHostException {
         this.sessionId = sessionId;
         this.versionNumber = "1";
         this.message = "Hello, User";
         this.locationMetadata = new ArrayList<>();
+        this.locationMetadata.add(new Server(InetAddress.getByName("127.0.0.1"), 6789));
 
         Calendar now = Calendar.getInstance();
         this.createAt = now.getTime();

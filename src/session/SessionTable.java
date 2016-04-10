@@ -1,5 +1,6 @@
 package session;
 
+import java.net.UnknownHostException;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.concurrent.ConcurrentHashMap;
@@ -38,7 +39,7 @@ public class SessionTable extends ConcurrentHashMap<String, Session> {
         }
     }
 
-    public void updateSession(String sessionId, String versionNumber, String message, Date discardTime) {
+    public void updateSession(String sessionId, String versionNumber, String message, Date discardTime) throws UnknownHostException {
         Session session = getOrDefault(sessionId, new Session(sessionId));
         session.setVersionNumber(versionNumber);
         session.setMessage(message);
