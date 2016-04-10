@@ -11,24 +11,24 @@ import java.util.concurrent.ConcurrentHashMap;
 /**
  * Session table that stores all sessions.
  */
-public class SessionTable extends ConcurrentHashMap<String, SessionData> {
+public class SessionTable extends ConcurrentHashMap<String, Session> {
 
     /**
      * Returns the session specified by sessionId. If the session exists, returns that session;
      * else, returns a new session.
      */
-    public SessionData getOrDefault(String sessionId, SessionData defaultSessionData) {
+    public Session getOrDefault(String sessionId, Session defaultSession) {
         if (containsKey(sessionId)) {
-            SessionData sessionData = get(sessionId);
-            sessionData.update();
-            return sessionData;
+            Session session = get(sessionId);
+            session.update();
+            return session;
         } else {
-            return defaultSessionData;
+            return defaultSession;
         }
     }
 
     public void removeExpired() {
-        Iterator<Entry<String, SessionData>> iter = this.entrySet().iterator();
+        Iterator<Entry<String, Session>> iter = this.entrySet().iterator();
         while (iter.hasNext()) {
             if (iter.next().getValue().getExpireAt().before(new Date())) {
                 iter.remove();

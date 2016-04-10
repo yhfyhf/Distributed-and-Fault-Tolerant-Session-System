@@ -1,5 +1,5 @@
+import session.Session;
 import session.SessionCookie;
-import session.SessionData;
 import session.SessionTable;
 
 import javax.servlet.ServletException;
@@ -42,19 +42,19 @@ public class SessionServlet extends HttpServlet {
             }
         }
 
-        SessionData sessionData;
+        Session session;
         if (sessionId == null) {        // first visit, no cookie
-            sessionData = new SessionData();
+            session = new Session();
         } else {                        // cookie passed to server, try to get session from session.SessionTable
-            sessionData = sessionTable.getOrDefault(sessionId, new SessionData());  // session may exist or be expired
+            session = sessionTable.getOrDefault(sessionId, new Session());  // session may exist or be expired
         }
-        sessionId = sessionData.getSessionId();
-        sessionTable.put(sessionId, sessionData);
+        sessionId = session.getSessionId();
+        sessionTable.put(sessionId, session);
 
-        Cookie cookie = sessionData.generateCookie();
+        Cookie cookie = session.generateCookie();
         response.addCookie(cookie);
 
-        request.setAttribute("sessionData", sessionTable.get(sessionId));
+        request.setAttribute("session", sessionTable.get(sessionId));
         request.setAttribute("serialCookie", cookie.getValue());
         request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     }
@@ -73,26 +73,26 @@ public class SessionServlet extends HttpServlet {
         if (request.getParameter("replace") != null) {                              /* Replace message. */
             String message = request.getParameter("message");
 
-            SessionData sessionData;
+            Session session;
             if (sessionId == null) {
-                sessionData = new SessionData();
+                session = new Session();
             } else {
                 if (sessionTable.containsKey(sessionId)) {
-                    sessionData = sessionTable.get(sessionId);
-                    sessionData.updateMessage(message);
-                    sessionData.update();
+                    session = sessionTable.get(sessionId);
+                    session.updateMessage(message);
+                    session.update();
                 } else {
-                    sessionData = new SessionData();
+                    session = new Session();
                 }
             }
 
-            sessionId = sessionData.getSessionId();
-            sessionTable.put(sessionId, sessionData);
+            sessionId = session.getSessionId();
+            sessionTable.put(sessionId, session);
 
-            Cookie cookie = sessionData.generateCookie();
+            Cookie cookie = session.generateCookie();
             response.addCookie(cookie);
 
-            request.setAttribute("sessionData", sessionTable.get(sessionId));
+            request.setAttribute("session", sessionTable.get(sessionId));
             request.setAttribute("serialCookie", cookie.getValue());
             request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
         } else if (request.getParameter("refresh") != null) {                       /* Refresh */

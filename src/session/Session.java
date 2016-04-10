@@ -1,8 +1,12 @@
 package session;
 
+import group.Server;
+
 import javax.servlet.http.Cookie;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 
 /**
  * Created by yhf on 3/17/16.
@@ -11,7 +15,7 @@ import java.util.Date;
 /**
  * Implementation of Session that encapsulates all the fields that a session holds.
  */
-public class SessionData {
+public class Session {
 
     private static int maxAge = 60;
 
@@ -20,13 +24,15 @@ public class SessionData {
     private String message;
     private Date createAt;
     private Date expireAt;
-    private String locationMetadata;
+//    private String locationMetadata;
+    private List<Server> locationMetadata;   // 可以把改为List<String>
 
-    public SessionData() {
+    public Session() {
         this.sessionId = Utils.generateSessionId();
         this.versionNumber = "1";
         this.message = "Hello, User";
-        this.locationMetadata = "default_location_metadata";
+//        this.locationMetadata = "default_location_metadata";
+        this.locationMetadata = new ArrayList<Server>();
 
         Calendar now = Calendar.getInstance();
         this.createAt = now.getTime();
@@ -68,7 +74,7 @@ public class SessionData {
     }
 
     public Cookie generateCookie() {
-        return new SessionCookie(sessionId, versionNumber, locationMetadata);
+        return new SessionCookie(sessionId, versionNumber, locationMetadata.toString());
     }
 
     public String getSessionId() {
@@ -89,5 +95,17 @@ public class SessionData {
 
     public Date getExpireAt() {
         return expireAt;
+    }
+
+    public List<Server> getLocationMetadata() {
+        return locationMetadata;
+    }
+
+    public void resetLocationMetada() {
+        locationMetadata = new ArrayList<>();
+    }
+
+    public void addLocation(Server server) {
+        locationMetadata.add(server);
     }
 }
