@@ -31,6 +31,9 @@ public class RPCClient {
         String sessionKey = sessionID + ";" + versionNumber;
         Session session = SessionTable.sessionTable.get(sessionKey);
 
+        System.out.println("Client gets session: " + session);
+        System.out.println("Client starts to sending read operation...");
+
         List<Server> servers = session.getLocationMetadata();
         while (Conf.R < servers.size()) {
             Random randomGenerator = new Random();
@@ -41,7 +44,10 @@ public class RPCClient {
         for (Server server : servers) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());
             rpcSocket.send(sendPkt);
+            System.out.println("Sent to server: " + server);
         }
+
+        System.out.println("Client waiting for response...");
 
         byte [] inBuf = new byte[Conf.MAX_PACKET_SIZE];
         DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
@@ -80,6 +86,8 @@ public class RPCClient {
         String outStr = callID + ";" + Conf.SESSION_WRITE + ";" + sessionId + ";"
                 + versionNumber + ";" + message + ";" + dicardTime;
         byte[] outBuf = outStr.getBytes();
+
+        System.out.println("Client starts to sending write operation...");
 
         for (Server server : Group.getRandomServers(Conf.W)) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());

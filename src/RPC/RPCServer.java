@@ -31,6 +31,9 @@ public class RPCServer implements Runnable {
                 int returnPort = recvPkt.getPort();
 
                 String inStr = new String(inBuf);
+
+                System.out.println("Server receives inStr: " + inStr);
+
                 String[] tokens = inStr.split(";");
                 String callID = tokens[0];
                 int operationCode = Integer.parseInt(tokens[1]);
