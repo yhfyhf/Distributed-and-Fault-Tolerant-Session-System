@@ -1,5 +1,6 @@
 package session;
 
+import javax.servlet.http.Cookie;
 import java.util.UUID;
 
 /**
@@ -10,5 +11,15 @@ public class Utils {
 
     public static String generateSessionId() {
         return UUID.randomUUID().toString();
+    }
+
+    public static String findCookie(String cookieName, Cookie[] cookies) {
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(SessionCookie.getCookieName())) {
+                String cookieValue = cookie.getValue();
+                return SessionCookie.getSessionId(cookieValue) + ";" + SessionCookie.getVersionNumber(cookieValue);
+            }
+        }
+        return "";
     }
 }

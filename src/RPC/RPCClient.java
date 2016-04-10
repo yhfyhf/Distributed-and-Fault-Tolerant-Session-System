@@ -3,14 +3,13 @@ package RPC;
 import group.Group;
 import group.Server;
 import session.Session;
+import session.SessionTable;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.SocketTimeoutException;
-import java.util.List;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
 
 /**
  * Created by yhf on 4/9/16.
@@ -21,14 +20,16 @@ public class RPCClient {
      * Gets session from R servers chosen from WQ servers stored in location metadata,
      * and returns the first received packet.
      */
-    public static Session readSession(Session session) throws IOException {
+    public static String readSession(String sessionID, String versionNumber) throws IOException {
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
 
         String callID = UUID.randomUUID().toString();
-        String outStr = callID + ";" + Conf.SESSION_READ + ";" +
-                session.getSessionId() + ";" + session.getVersionNumber();
-        byte[] outBuf = Utils.stringToByteArray(outStr);
+        String outStr = callID + ";" + Conf.SESSION_READ + ";" + sessionID + ";" + versionNumber;
+        byte[] outBuf = outStr.getBytes();
+
+        String sessionKey = sessionID + ";" + versionNumber;
+        Session session = SessionTable.sessionTable.get(sessionKey);
 
         List<Server> servers = session.getLocationMetadata();
         while (Conf.R < servers.size()) {
@@ -45,25 +46,24 @@ public class RPCClient {
         byte [] inBuf = new byte[Conf.MAX_PACKET_SIZE];
         DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
 
+        String ret = "";
         try {
             String inStr;
             do {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
-                inStr = Utils.byteArrayToString(inBuf);
+                inStr = new String(inBuf);
             } while (inStr == null || inStr.equals("") || !inStr.split(";")[0].equals(callID));
-        } catch (ClassNotFoundException e) {
-            session = null;
-            e.printStackTrace();
+            ret = "true;" + inStr;
         } catch (SocketTimeoutException e) {
-            session = null;
             e.printStackTrace();
+            ret = "false;" + "SocketTimeout";
         } catch (IOException e) {
-            session = null;
             e.printStackTrace();
+            ret = "false;" + e;
         } finally {
             rpcSocket.close();
-            return session;
+            return ret;
         }
     }
 
@@ -71,16 +71,15 @@ public class RPCClient {
      * Writes to W servers, waits for the first WQ successful responses,
      * and sets the new cookie metadata to the set of WQ bricks that responded.
      */
-    public static Session writeSession(Session session) throws IOException {
+    public static String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
+            throws IOException {
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
 
         String callID = UUID.randomUUID().toString();
-        String outStr = callID + ";" + Conf.SESSION_WRITE + ";" +
-                session.getSessionId() + ";" + session.getVersionNumber() + ";" +
-                session.getMessage();
-
-        byte[] outBuf = Utils.stringToByteArray(outStr);
+        String outStr = callID + ";" + Conf.SESSION_WRITE + ";" + sessionId + ";"
+                + versionNumber + ";" + message + ";" + dicardTime;
+        byte[] outBuf = outStr.getBytes();
 
         for (Server server : Group.getRandomServers(Conf.W)) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());
@@ -90,27 +89,31 @@ public class RPCClient {
         byte [] inBuf = new byte[Conf.MAX_PACKET_SIZE];
         DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
 
-        session.resetLocationMetada();
+        String sessionKey = sessionId + ";" + versionNumber;
+        Session session = SessionTable.sessionTable.get(sessionKey);
 
+        String ret = "";
         try {
             int numResponded = 0;
             String inStr;
+            List<Server> locations = new ArrayList<>();
             do {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
-                inStr = Utils.byteArrayToString(inBuf);
+                inStr = new String(inBuf);
 
                 if (inStr.split(";")[0].equals(callID)) {
                     numResponded++;
-                    session.addLocation(new Server(recvPkt.getAddress(), recvPkt.getPort()));
+                    locations.add(new Server(recvPkt.getAddress(), recvPkt.getPort()));
                 }
             } while (numResponded < Conf.WQ);
-        } catch (ClassNotFoundException e) {
-            session = null;
-            e.printStackTrace();
+            session.addLocations(locations);
+            ret = "true;";
+        } catch (SocketTimeoutException e) {
+            ret = "false;" + "SocketTimeout";
         } finally {
             rpcSocket.close();
-            return session;
+            return ret;
         }
     }
 }

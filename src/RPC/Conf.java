@@ -13,6 +13,4 @@ public class Conf {
 
     public static final int MAX_PACKET_SIZE = 4096;
     public static final int PORT_PROJ1B_RPC = 5300;
-
-
 }

@@ -24,15 +24,17 @@ public class Session {
     private String message;
     private Date createAt;
     private Date expireAt;
-//    private String locationMetadata;
     private List<Server> locationMetadata;   // 可以把改为List<String>
 
     public Session() {
-        this.sessionId = Utils.generateSessionId();
+        this(Utils.generateSessionId());
+    }
+
+    public Session(String sessionId) {
+        this.sessionId = sessionId;
         this.versionNumber = "1";
         this.message = "Hello, User";
-//        this.locationMetadata = "default_location_metadata";
-        this.locationMetadata = new ArrayList<Server>();
+        this.locationMetadata = new ArrayList<>();
 
         Calendar now = Calendar.getInstance();
         this.createAt = now.getTime();
@@ -43,10 +45,14 @@ public class Session {
     /**
      * Update session's expireAt.
      */
-    private void updateExpireAt() {
+    public void setExpireAt() {
         Calendar now = Calendar.getInstance();
         now.add(Calendar.SECOND, maxAge);
         this.expireAt = now.getTime();
+    }
+
+    public void setExpireAt(Date expireAt) {
+        this.expireAt = expireAt;
     }
 
     /**
@@ -61,7 +67,7 @@ public class Session {
      */
     public void update() {
         updateVersionNumber();
-        updateExpireAt();
+        setExpireAt();
     }
 
     /**
@@ -69,7 +75,7 @@ public class Session {
      * Note this is an atomic operation. Version number and expireAt should not be updated here.
      * @param message
      */
-    public void updateMessage(String message) {
+    public void setMessage(String message) {
         this.message = message;
     }
 
@@ -83,6 +89,10 @@ public class Session {
 
     public String getVersionNumber() {
         return versionNumber;
+    }
+
+    public void setVersionNumber(String versionNumber) {
+        this.versionNumber = versionNumber;
     }
 
     public String getMessage() {
@@ -107,5 +117,15 @@ public class Session {
 
     public void addLocation(Server server) {
         locationMetadata.add(server);
+    }
+
+    public void addLocations(List<Server> servers) {
+        for (Server server : servers) {
+            addLocation(server);
+        }
+    }
+
+    public String toString() {
+        return sessionId + ": " + versionNumber;
     }
 }

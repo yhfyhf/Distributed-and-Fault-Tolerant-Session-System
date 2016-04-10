@@ -13,13 +13,15 @@ import java.util.concurrent.ConcurrentHashMap;
  */
 public class SessionTable extends ConcurrentHashMap<String, Session> {
 
+    public static SessionTable sessionTable = new SessionTable();
+
     /**
      * Returns the session specified by sessionId. If the session exists, returns that session;
      * else, returns a new session.
      */
-    public Session getOrDefault(String sessionId, Session defaultSession) {
-        if (containsKey(sessionId)) {
-            Session session = get(sessionId);
+    public Session getOrDefault(String sessionKey, Session defaultSession) {
+        if (containsKey(sessionKey)) {
+            Session session = get(sessionKey);
             session.update();
             return session;
         } else {
@@ -34,5 +36,12 @@ public class SessionTable extends ConcurrentHashMap<String, Session> {
                 iter.remove();
             }
         }
+    }
+
+    public void updateSession(String sessionId, String versionNumber, String message, Date discardTime) {
+        Session session = getOrDefault(sessionId, new Session(sessionId));
+        session.setVersionNumber(versionNumber);
+        session.setMessage(message);
+        session.setExpireAt(discardTime);
     }
 }
