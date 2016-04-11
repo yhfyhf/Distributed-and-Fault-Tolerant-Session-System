@@ -1,5 +1,9 @@
 package group;
 
+import RPC.Conf;
+
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -9,6 +13,11 @@ import java.util.List;
  */
 public class Group {
     private static List<Server> servers = new ArrayList<Server>();
+
+    public Group() throws UnknownHostException {
+        servers.add(new Server(InetAddress.getByName("192.168.1.107"), Conf.PORT_PROJ1B_RPC));
+        servers.add(new Server(InetAddress.getByName("192.168.1.123"), Conf.PORT_PROJ1B_RPC));
+    }
 
     public static List<Server> getServers() {
         return servers;

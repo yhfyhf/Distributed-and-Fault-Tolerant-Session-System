@@ -98,7 +98,7 @@ public class SessionServlet extends HttpServlet {
                     if (session == null) {
                         // TODO: render an error page
                     }
-                } else {  // starts with "false"
+                } else {  // read operation returns starting with "false"
                     if (rpcResponse[1].equals("SocketTimeout")) {
                         System.out.println("Socket Timeout!!!");
                     } else {
