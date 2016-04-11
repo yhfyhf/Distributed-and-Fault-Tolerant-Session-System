@@ -64,21 +64,24 @@ public class SessionServlet extends HttpServlet {
         }
 
         Session session;
-        if (cookieValue.isEmpty()) {    // first visit, no cookie
+        if (cookieValue.isEmpty()) {     // first visit, no cookie
             session = new Session();
+            sessionKey = session.getSessionId() + "#" + session.getVersionNumber();
+//            SessionTable.sessionTable.put(sessionKey, session);
             session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
             if (session == null) {
                 // TODO: render an error page
+                System.out.println("Servlet session is null. 1");
                 return;
             }
-        } else {
+        } else {                         // Cookie value is not empty
             String sessionId = cookieValue.split("__")[0];
             String versionNumber = cookieValue.split("__")[1];
             String locationMetadataStr = cookieValue.split("__")[2];
             sessionKey = sessionId + "#" + versionNumber;
             session = SessionTable.sessionTable.get(sessionKey);
 
-            if (session == null) {
+            if (session == null) {        // can not find session locally
                 List<Server> servers = new ArrayList<>();
                 System.out.println("Servlet need to request from locationMetadata: " + locationMetadataStr);
                 for (String serverStr : locationMetadataStr.split(",")) {
@@ -113,12 +116,14 @@ public class SessionServlet extends HttpServlet {
             }
         }
 
+        System.out.println("Session: " + session);
         String sessionId = session.getSessionId();
         String versionNumber = session.getVersionNumber();
         sessionKey = sessionId + "#" + versionNumber;
         SessionTable.sessionTable.put(sessionKey, session);
 
         Cookie cookie = session.generateCookie();
+        cookie.setMaxAge(Session.maxAge);
         response.addCookie(cookie);
 
         request.setAttribute("sessionId", session.getSessionId());

@@ -44,5 +44,6 @@ public class SessionTable extends ConcurrentHashMap<String, Session> {
         session.setVersionNumber(versionNumber);
         session.setMessage(message);
         session.setExpireAt(discardTime);
+        sessionTable.put(sessionId+"#"+versionNumber, session);
     }
 }

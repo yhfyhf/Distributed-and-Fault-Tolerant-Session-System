@@ -113,6 +113,8 @@ public class RPCClient {
                 rpcSocket.receive(recvPkt);
                 inStr = (new String(inBuf)).trim();
 
+                System.out.println("Client after send write opr, receives inStr: " + inStr);
+
                 if (inStr.split(";")[0].equals(callID)) {
                     numResponded++;
                     locations.add(new Server(recvPkt.getAddress(), recvPkt.getPort()));

@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class Session {
 
-    private static int maxAge = 60;
+    public static final int maxAge = 60;
 
     private String sessionId;
     private String versionNumber;

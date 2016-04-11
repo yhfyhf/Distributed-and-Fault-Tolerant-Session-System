@@ -8,7 +8,7 @@ public class Conf {
     public static final int SESSION_WRITE = 2;
 
     public static final int W = 2;   // sends write requests to W distinct servers
-    public static final int WQ = 2;  // waits for at least WQ responses
+    public static final int WQ = 1;  // waits for at least WQ responses
     public static final int R = 2;   // sends read requests to R servers randomly chosen from WQ servers
 
     public static final int MAX_PACKET_SIZE = 4096;

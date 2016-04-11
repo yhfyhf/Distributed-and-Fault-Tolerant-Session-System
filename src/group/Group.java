@@ -34,7 +34,6 @@ public class Group {
     }
 
     public List<Server> getRandomServers(int num) {
-        System.out.println("Random choose from: " + servers);
         List<Server> copy = new ArrayList<>(servers);
         Collections.shuffle(copy);
         return copy.subList(0, num-1);

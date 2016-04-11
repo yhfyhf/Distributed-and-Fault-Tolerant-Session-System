@@ -43,6 +43,8 @@ public class RPCServer implements Runnable {
                 String sessionId = tokens[2];
                 String versionNumber = tokens[3];
 
+                System.out.println("!!! Server receives operationCode: " + operationCode);
+
                 String outStr = "";
 
                 switch (operationCode) {
@@ -67,8 +69,10 @@ public class RPCServer implements Runnable {
                         DateFormat format = new SimpleDateFormat("EEE MMM dd HH:mm:ss z yyyy", Locale.ENGLISH);
                         Date discardTime = format.parse(discardTimeStr);
 
+                        System.out.println("!!! Server writes: " + message + ";" + discardTime);
                         SessionTable.sessionTable.updateSession(sessionId, versionNumber, message, discardTime);
-                        outStr = callID;
+                        outStr = callID + ";";
+                        System.out.println("!!! Not sure write successfully, outStr: " + outStr);
                 }
 
                 byte[] outBuf = outStr.getBytes();
@@ -76,15 +80,15 @@ public class RPCServer implements Runnable {
                 rpcSocket.send(sendPkt);
             } catch (ParseException e) {
                 // e.printStackTrace();
-                System.out.println("Server ParseException: " + e);
+                System.out.println("!!! Server ParseException: " + e);
             } catch (UnknownHostException e) {
                 // e.printStackTrace();
-                System.out.println("Server UnknownHostException: " + e);
+                System.out.println("!!! Server UnknownHostException: " + e);
             } catch (IOException e) {
                 // e.printStackTrace();
-                System.out.println("Server IOException: " + e);
+                System.out.println("!!! Server IOException: " + e);
             } catch (IndexOutOfBoundsException e) {
-                System.out.println("Server IndexOutOfBoundsException: " + e);
+                System.out.println("!!! Server IndexOutOfBoundsException: " + e);
             } finally {
                 rpcSocket.close();
             }
