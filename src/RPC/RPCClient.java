@@ -19,8 +19,14 @@ public class RPCClient {
     /**
      * Gets session from R servers chosen from WQ servers stored in location metadata,
      * and returns the first received packet.
+     *
+     * Send:  callID;Conf.SESSION_READ;sessionID;versionNumber
+     * Return: true;CallID;message
+     *         true;NotExists
+     *         false;SocketTimeout
+     *         false;errorMessage
      */
-    public static String readSession(String sessionID, String versionNumber) throws IOException {
+    public String readSession(String sessionID, String versionNumber, List<Server> servers) throws IOException {
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
 
@@ -28,13 +34,8 @@ public class RPCClient {
         String outStr = callID + ";" + Conf.SESSION_READ + ";" + sessionID + ";" + versionNumber;
         byte[] outBuf = outStr.getBytes();
 
-        String sessionKey = sessionID + ";" + versionNumber;
-        Session session = SessionTable.sessionTable.get(sessionKey);
-
-        System.out.println("Client gets session: " + session);
         System.out.println("Client starts to sending read operation...");
 
-        List<Server> servers = session.getLocationMetadata();
         while (Conf.R < servers.size()) {
             Random randomGenerator = new Random();
             int index = randomGenerator.nextInt(servers.size());
@@ -44,7 +45,7 @@ public class RPCClient {
         for (Server server : servers) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());
             rpcSocket.send(sendPkt);
-            System.out.println("Sent to server: " + server);
+            System.out.println("Client sent to server: " + server);
         }
 
         System.out.println("Client waiting for response...");
@@ -77,7 +78,7 @@ public class RPCClient {
      * Writes to W servers, waits for the first WQ successful responses,
      * and sets the new cookie metadata to the set of WQ bricks that responded.
      */
-    public static String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
+    public String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
             throws IOException {
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
@@ -97,7 +98,7 @@ public class RPCClient {
         byte [] inBuf = new byte[Conf.MAX_PACKET_SIZE];
         DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
 
-        String sessionKey = sessionId + ";" + versionNumber;
+        String sessionKey = sessionId + "#" + versionNumber;
         Session session = SessionTable.sessionTable.get(sessionKey);
 
         String ret = "";

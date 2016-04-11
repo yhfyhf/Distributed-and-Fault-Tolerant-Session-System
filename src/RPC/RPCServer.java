@@ -21,6 +21,8 @@ public class RPCServer implements Runnable {
 
     public void run() {
         try {
+            System.out.println("Server thread running...");
+
             DatagramSocket rpcSocket = new DatagramSocket(Conf.PORT_PROJ1B_RPC);
 
             while (true) {

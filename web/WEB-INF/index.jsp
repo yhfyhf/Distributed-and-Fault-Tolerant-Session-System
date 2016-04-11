@@ -24,12 +24,12 @@
 <div class="main">
     <p>
         <span>NetID: hy456</span>
-        <span>Session: ${session.getSessionId()}</span>
-        <span>Version: ${session.getVersionNumber()}</span>
-        <span>Date: ${session.getCreateAt()}</span>
+        <span>Session: ${sessionId}</span>
+        <span>Version: ${versionNumber}</span>
+        <span>Date: ${curTime}</span>
     </p>
 
-    <h1>${session.getMessage()}</h1>
+    <h1>${message}</h1>
 
     <form method="post" action="">
         <div>
@@ -46,7 +46,7 @@
 
     <p>
         <span>Cookie: ${serialCookie}</span>
-        <span>Expires: ${session.getExpireAt()}</span>
+        <span>Expires: ${expireAt}</span>
     </p>
 </div>
 </body>

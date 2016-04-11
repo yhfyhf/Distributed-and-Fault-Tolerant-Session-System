@@ -13,11 +13,14 @@ public class Utils {
         return UUID.randomUUID().toString();
     }
 
+    /**
+     * Find the cookie with given cookieName, and returns the cookieValue.
+     */
     public static String findCookie(String cookieName, Cookie[] cookies) {
         for (Cookie cookie : cookies) {
             if (cookie.getName().equals(SessionCookie.getCookieName())) {
                 String cookieValue = cookie.getValue();
-                return SessionCookie.getSessionId(cookieValue) + ";" + SessionCookie.getVersionNumber(cookieValue);
+                return cookieValue;
             }
         }
         return "";
