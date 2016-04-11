@@ -35,7 +35,7 @@ public class RPCServer implements Runnable {
 
                 String inStr = (new String(inBuf)).trim();
 
-                System.out.println("Server receives inStr: " + inStr);
+                System.out.println("!!! Server receives inStr: " + inStr);
 
                 String[] tokens = inStr.split(";");
                 String callID = tokens[0];
@@ -48,11 +48,14 @@ public class RPCServer implements Runnable {
                 switch (operationCode) {
                     case Conf.SESSION_READ:
                         // callID;operationCode;sessionID;versionNumber
+                        System.out.println("!!! Server receives a ReadSession operation.");
                         Session session = SessionTable.sessionTable.get(sessionId + ";" + versionNumber);
                         if (session != null) {
                             outStr = callID + ";" + session.getMessage();  // TODO: What if message contains ';'
+                            System.out.println("!!! Server receives outStr: " + outStr);
                         } else {
                             outStr = "NotExists;";
+                            System.out.println("!!! Server this session not exists.");
                         }
                         break;
 
