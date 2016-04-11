@@ -4,10 +4,7 @@ import session.Session;
 import session.SessionTable;
 
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.DatagramSocket;
-import java.net.InetAddress;
-import java.net.SocketException;
+import java.net.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -20,17 +17,23 @@ import java.util.Locale;
 public class RPCServer implements Runnable {
 
     public void run() {
-        try {
-            DatagramSocket rpcSocket = new DatagramSocket(Conf.PORT_PROJ1B_RPC);
+        while (true) {
+            DatagramSocket rpcSocket;
+            try {
+                rpcSocket = new DatagramSocket(Conf.PORT_PROJ1B_RPC);
+            } catch (SocketException e) {
+                System.out.println("Server SocketException: " + e);
+                continue;
+            }
 
-            while (true) {
+            try {
                 byte[] inBuf = new byte[Conf.MAX_PACKET_SIZE];
                 DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
                 rpcSocket.receive(recvPkt);
                 InetAddress returnAddr = recvPkt.getAddress();
                 int returnPort = recvPkt.getPort();
 
-                String inStr = new String(inBuf);
+                String inStr = (new String(inBuf)).trim();
 
                 System.out.println("Server receives inStr: " + inStr);
 
@@ -68,13 +71,20 @@ public class RPCServer implements Runnable {
                 byte[] outBuf = outStr.getBytes();
                 DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, returnAddr, returnPort);
                 rpcSocket.send(sendPkt);
+            } catch (ParseException e) {
+                // e.printStackTrace();
+                System.out.println("Server ParseException: " + e);
+            } catch (UnknownHostException e) {
+                // e.printStackTrace();
+                System.out.println("Server UnknownHostException: " + e);
+            } catch (IOException e) {
+                // e.printStackTrace();
+                System.out.println("Server IOException: " + e);
+            } catch (IndexOutOfBoundsException e) {
+                System.out.println("Server IndexOutOfBoundsException: " + e);
+            } finally {
+                rpcSocket.close();
             }
-        } catch (SocketException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (ParseException e) {
-            e.printStackTrace();
         }
     }
 

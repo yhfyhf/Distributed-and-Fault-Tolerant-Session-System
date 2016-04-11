@@ -59,14 +59,14 @@ public class RPCClient {
             do {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
-                inStr = new String(inBuf);
+                inStr = (new String(inBuf)).trim();
             } while (inStr == null || inStr.equals("") || !inStr.split(";")[0].equals(callID));
             ret = "true;" + inStr;
         } catch (SocketTimeoutException e) {
-            e.printStackTrace();
+            System.out.println("Client SocketTimeoutException: " + e);
             ret = "false;" + "SocketTimeout";
         } catch (IOException e) {
-            e.printStackTrace();
+            System.out.println("Client IOException: " + e);
             ret = "false;" + e;
         } finally {
             rpcSocket.close();
@@ -109,7 +109,7 @@ public class RPCClient {
             do {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
-                inStr = new String(inBuf);
+                inStr = (new String(inBuf)).trim();
 
                 if (inStr.split(";")[0].equals(callID)) {
                     numResponded++;
