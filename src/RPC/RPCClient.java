@@ -60,6 +60,7 @@ public class RPCClient {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
                 inStr = (new String(inBuf)).trim();
+                System.out.println("Client receives: " + inStr);
             } while (inStr == null || inStr.equals("") || !inStr.split(";")[0].equals(callID));
             ret = "true;" + inStr;
         } catch (SocketTimeoutException e) {
