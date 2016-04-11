@@ -92,7 +92,7 @@ public class RPCClient {
 
         System.out.println("Client starts to send write operation...");
 
-        for (Server server : Group.getRandomServers(Conf.W)) {
+        for (Server server : Group.group.getRandomServers(Conf.W)) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());
             rpcSocket.send(sendPkt);
         }

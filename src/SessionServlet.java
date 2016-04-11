@@ -69,6 +69,7 @@ public class SessionServlet extends HttpServlet {
             session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
             if (session == null) {
                 // TODO: render an error page
+                return;
             }
         } else {
             String sessionId = cookieValue.split("__")[0];
@@ -97,6 +98,7 @@ public class SessionServlet extends HttpServlet {
                     session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
                     if (session == null) {
                         // TODO: render an error page
+                        return;
                     }
                 } else {  // read operation returns starting with "false"
                     if (rpcResponse[1].equals("SocketTimeout")) {
@@ -106,6 +108,7 @@ public class SessionServlet extends HttpServlet {
                         System.out.println("Error Message " + rpcResponse[1]);
                     }
                     // TODO: render an error page
+                    return;
                 }
             }
         }
