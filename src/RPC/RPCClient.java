@@ -88,7 +88,7 @@ public class RPCClient {
                 + versionNumber + ";" + message + ";" + dicardTime;
         byte[] outBuf = outStr.getBytes();
 
-        System.out.println("Client starts to sending write operation...");
+        System.out.println("Client starts to send write operation...");
 
         for (Server server : Group.getRandomServers(Conf.W)) {
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());

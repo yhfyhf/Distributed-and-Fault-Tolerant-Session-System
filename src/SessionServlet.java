@@ -29,16 +29,13 @@ import java.util.List;
 public class SessionServlet extends HttpServlet {
 
     private RPCClient rpcClient;
-    private RPCServer rpcServer;
+    private static RPCServer rpcServer;
 
-    /**
-     * Start daemon thread to remove expired sessions.
-     */
-    public void init() {
+    public SessionServlet() {
         rpcClient = new RPCClient();
         rpcServer = new RPCServer();
         removeExpiredSessionsDaemon();
-        runRPCServerDaemon();
+        (new Thread(rpcServer)).start();
     }
 
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
@@ -169,18 +166,5 @@ public class SessionServlet extends HttpServlet {
         });
         removeExpiredDaemonThread.setDaemon(true);
         removeExpiredDaemonThread.start();
-    }
-
-    private void runRPCServerDaemon() {
-        Thread RPCServerDaemonThread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                while (true) {
-                    rpcServer.run();
-                }
-            }
-        });
-        RPCServerDaemonThread.setDaemon(true);
-        RPCServerDaemonThread.start();
     }
 }

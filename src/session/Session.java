@@ -37,7 +37,7 @@ public class Session {
         this.versionNumber = "1";
         this.message = "Hello, User";
         this.locationMetadata = new ArrayList<>();
-        this.locationMetadata.add(new Server(InetAddress.getLocalHost(), 6789));
+        this.locationMetadata.add(new Server(InetAddress.getByName("192.168.1.123"), 6789));
 
         Calendar now = Calendar.getInstance();
         this.createAt = now.getTime();
