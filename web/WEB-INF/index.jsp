@@ -26,7 +26,7 @@
         <span>NetID: hy456</span>
         <span>Session: ${sessionId}</span>
         <span>Version: ${versionNumber}</span>
-        <span>Date: ${curTime}</span>
+        <span>Current Date: ${curTime}</span>
     </p>
 
     <h1>${message}</h1>

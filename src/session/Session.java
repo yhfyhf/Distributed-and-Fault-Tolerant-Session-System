@@ -84,7 +84,8 @@ public class Session {
     }
 
     public Cookie generateCookie() {
-        return new SessionCookie(sessionId, versionNumber, locationMetadata.toString());
+        String locationMetadataStr = locationMetadata.toString();
+        return new SessionCookie(sessionId, versionNumber, locationMetadataStr.substring(1, locationMetadataStr.length() - 1)); // remove "[" and "]"
     }
 
     public String getSessionId() {

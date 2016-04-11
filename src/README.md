@@ -4,3 +4,17 @@ Cookie Value = sessionId__versionNumber__locationMetadata
 sessionId = ServerId+rebootNum+sessionNum
 sessionKey = sessionId#versionNumber
 Servers = ip:port,ip:port,ip:port
+
+
+Client read
+Send:   callID;Conf.SESSION_READ;sessionID;versionNumber
+Return: true;CallID;message
+        true;NotExists
+        false;SocketTimeout
+        false;errorMessage
+
+Client write
+Send:   callID;Conf.SESSION_WRITE;sessionId;versionNumber;message;dicardTime
+Return: true;server1,server2,server3
+        false;SocketTimeout
+

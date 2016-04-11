@@ -38,6 +38,23 @@ public class SessionServlet extends HttpServlet {
         (new Thread(rpcServer)).start();
     }
 
+    /**
+     * Get cookies, find the desire cookie.
+     * If cookie not exists:
+     *     New a session.
+     * If cookie exists:
+     *     Get sessionId__versionNumber__locationMetadata from the cookie.
+     *     Get the session specified by sessionId#versionNumber from the local sessionTable.
+     *     If session not exists:
+     *         Send RPC readSession to other servers specified in the cookie.
+     *         Get one response, and get all the data from the response.
+     *         Stores in local server.
+     *     If session exists:
+     *         pass
+     * Send RPC writeSession operation (write to W servers, waits for WQ response)
+     *     * If write fails (does not receive WQ responses), displays failing page
+     *     * If write successes, returns session data and cookie to browser.
+     */
     protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         String cookieValue = "";
         String sessionKey;
@@ -47,20 +64,22 @@ public class SessionServlet extends HttpServlet {
         }
 
         Session session;
-        if (cookieValue.isEmpty()) {     // first visit, no cookie
+        if (cookieValue.isEmpty()) {    // first visit, no cookie
             session = new Session();
-        } else {                        // cookie passed to server, try to get session from session.SessionTable
+            session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
+            if (session == null) {
+                // TODO: render an error page
+            }
+        } else {
             String sessionId = cookieValue.split("__")[0];
             String versionNumber = cookieValue.split("__")[1];
             String locationMetadataStr = cookieValue.split("__")[2];
-            locationMetadataStr = locationMetadataStr.substring(1, locationMetadataStr.length() - 1);  // remove "[" and "]"
             sessionKey = sessionId + "#" + versionNumber;
-
             session = SessionTable.sessionTable.get(sessionKey);
 
             if (session == null) {
                 List<Server> servers = new ArrayList<>();
-                System.out.println("locationMetadata: " + locationMetadataStr);
+                System.out.println("Servlet need to request from locationMetadata: " + locationMetadataStr);
                 for (String serverStr : locationMetadataStr.split(",")) {
                     String ipStr = serverStr.split(":")[0].substring(1);
                     String portStr = serverStr.split(":")[1];
@@ -72,7 +91,13 @@ public class SessionServlet extends HttpServlet {
                 System.out.println("rpcResponseStr: " + rpcResponseStr);
                 String[] rpcResponse = rpcResponseStr.split(";");
                 if (rpcResponse[0].equals("true")) {
-                    String message = rpcResponse[1];
+                    String message = rpcResponse[2];
+                    session = new Session();
+                    session.setMessage(message);
+                    session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
+                    if (session == null) {
+                        // TODO: render an error page
+                    }
                 } else {  // starts with "false"
                     if (rpcResponse[1].equals("SocketTimeout")) {
                         System.out.println("Socket Timeout!!!");

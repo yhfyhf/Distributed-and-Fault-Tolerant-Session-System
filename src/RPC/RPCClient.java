@@ -81,6 +81,7 @@ public class RPCClient {
      */
     public String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
             throws IOException {
+        // TODO: there is a delta for discardTime
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
 
@@ -117,8 +118,11 @@ public class RPCClient {
                     locations.add(new Server(recvPkt.getAddress(), recvPkt.getPort()));
                 }
             } while (numResponded < Conf.WQ);
-            session.addLocations(locations);
             ret = "true;";
+            for (Server location : locations) {
+                ret += location + ",";
+            }
+            ret = ret.substring(0, ret.length() - 1);
         } catch (SocketTimeoutException e) {
             ret = "false;" + "SocketTimeout";
         } finally {
