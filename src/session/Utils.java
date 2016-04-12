@@ -32,16 +32,16 @@ public class Utils {
     }
 
     /**
-     * Send RPC writeSession request, and check if it successes.
+     * Send RPC writeSession request, add locations to session, and check if it successes.
      */
     public static Session writeSessionAndCheckSuccess(RPCClient rpcClient, Session session) throws IOException {
         String rpcResponseStr = rpcClient.writeSession(session.getSessionId(), session.getVersionNumber(), session.getMessage(), session.getExpireAt());
         String[] rpcResponse = rpcResponseStr.split(";");
         if (rpcResponse[0].equals("true")) {
             String[] serversStr = rpcResponse[1].split(",");
-            System.out.println("Servlet receives locations: " + serversStr);
+            System.out.println("Servlet receives write response locations: " + serversStr);
             for (String serverStr : serversStr) {
-                String ipStr = serverStr.split(":")[0].substring(1);;
+                String ipStr = serverStr.split(":")[0].substring(1);
                 String portStr = serverStr.split(":")[1];
                 System.out.println("ipStr: " + ipStr);
                 session.addLocation(new Server(InetAddress.getByName(ipStr), Integer.parseInt(portStr)));

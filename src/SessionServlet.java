@@ -66,12 +66,12 @@ public class SessionServlet extends HttpServlet {
         Session session;
         if (cookieValue.isEmpty()) {     // first visit, no cookie
             session = new Session();
-            sessionKey = session.getSessionId() + "#" + session.getVersionNumber();
-//            SessionTable.sessionTable.put(sessionKey, session);
+            /*sessionKey = session.getSessionId() + "#" + session.getVersionNumber();
+            SessionTable.sessionTable.put(sessionKey, session);*/
             session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
             if (session == null) {
-                // TODO: render an error page
                 System.out.println("Servlet session is null. 1");
+                renderErrorPage(request, response);
                 return;
             }
         } else {                         // Cookie value is not empty
@@ -100,29 +100,30 @@ public class SessionServlet extends HttpServlet {
                     session.setMessage(message);
                     session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
                     if (session == null) {
-                        // TODO: render an error page
+                        renderErrorPage(request, response);
                         return;
                     }
-                } else {  // read operation returns starting with "false"
+                } else {      // read operation returns starting with "false"
                     if (rpcResponse[1].equals("SocketTimeout")) {
                         System.out.println("Socket Timeout!!!");
                     } else {
                         // other error message
                         System.out.println("Error Message " + rpcResponse[1]);
                     }
-                    // TODO: render an error page
+                    renderErrorPage(request, response);
                     return;
                 }
             }
         }
 
-        System.out.println("Session: " + session);
+        System.out.println("[Servlet] Session: " + session);
         String sessionId = session.getSessionId();
         String versionNumber = session.getVersionNumber();
         sessionKey = sessionId + "#" + versionNumber;
         SessionTable.sessionTable.put(sessionKey, session);
 
         Cookie cookie = session.generateCookie();
+        System.out.println("[Servlet] Cookie: " + cookie.getValue());
         cookie.setMaxAge(Session.maxAge);
         response.addCookie(cookie);
 
@@ -142,7 +143,7 @@ public class SessionServlet extends HttpServlet {
             sessionKey = Utils.findCookie(SessionCookie.getCookieName(), cookies);
         }
 
-        if (request.getParameter("replace") != null) {                              /* Replace message. */
+        if (request.getParameter("replace") != null) {       /* Replace message. */
             String message = request.getParameter("message");
 
             Session session;
@@ -199,5 +200,10 @@ public class SessionServlet extends HttpServlet {
         });
         removeExpiredDaemonThread.setDaemon(true);
         removeExpiredDaemonThread.start();
+    }
+
+    private void renderErrorPage(HttpServletRequest request, HttpServletResponse response)
+            throws ServletException, IOException {
+        request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
     }
 }

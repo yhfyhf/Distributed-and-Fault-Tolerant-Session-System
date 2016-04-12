@@ -20,7 +20,7 @@ import java.util.List;
  */
 public class Session {
 
-    public static final int maxAge = 60;
+    public static final int maxAge = 6000;
 
     private String sessionId;
     private String versionNumber;
@@ -131,6 +131,6 @@ public class Session {
     }
 
     public String toString() {
-        return sessionId + ": " + versionNumber;
+        return sessionId + "#" + versionNumber;
     }
 }
