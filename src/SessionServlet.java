@@ -14,6 +14,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
+import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -232,7 +233,16 @@ public class SessionServlet extends HttpServlet {
         } else if (request.getParameter("refresh") != null) {                       /* Refresh */
             doGet(request, response);
         } else if (request.getParameter("logout") != null) {
+            if (!cookieValue.isEmpty()) {
+                String sessionId = cookieValue.split("__")[0];
+                String versionNumber = cookieValue.split("__")[1];
+                sessionKey = sessionId + "#" + versionNumber;
+            }
+            Session session = SessionTable.sessionTable.get(sessionKey);
+            Cookie cookie = session.generateCookie();
             SessionTable.sessionTable.remove(sessionKey);
+            cookie.setMaxAge(0);
+            response.addCookie(cookie);
             request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
         } else {
             doGet(request, response);
