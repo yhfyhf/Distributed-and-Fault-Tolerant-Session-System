@@ -26,7 +26,7 @@ public class Group {
 
     public Group() throws UnknownHostException {
         servers.add(new Server(InetAddress.getByName("192.168.1.102"), Conf.PORT_PROJ1B_RPC));
-        servers.add(new Server(InetAddress.getByName("192.168.1.123"), Conf.PORT_PROJ1B_RPC));
+//        servers.add(new Server(InetAddress.getByName("192.168.1.123"), Conf.PORT_PROJ1B_RPC));
     }
 
     public List<Server> getServers() {
@@ -36,6 +36,6 @@ public class Group {
     public List<Server> getRandomServers(int num) {
         List<Server> copy = new ArrayList<>(servers);
         Collections.shuffle(copy);
-        return copy.subList(0, num-1);
+        return copy.subList(0, num);
     }
 }

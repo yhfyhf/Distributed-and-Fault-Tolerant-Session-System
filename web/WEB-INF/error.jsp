@@ -11,6 +11,6 @@
     <title>Error</title>
 </head>
 <body>
-    Error. System fails.
+    Error. ${error}
 </body>
 </html>
