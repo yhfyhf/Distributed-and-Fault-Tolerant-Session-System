@@ -73,6 +73,10 @@ public class RPCServer implements Runnable {
                         SessionTable.sessionTable.updateSession(sessionId, versionNumber, message, discardTime);
                         outStr = callID + ";";
                         System.out.println("!!! Not sure write successfully, outStr: " + outStr);
+                        System.out.println("[Server] Now locally the session table is:");
+                        for (String sessionKey : SessionTable.sessionTable.keySet()) {
+                            System.out.println(sessionKey + "  " + SessionTable.sessionTable.get(sessionKey));
+                        }
                 }
 
                 byte[] outBuf = outStr.getBytes();
