@@ -26,3 +26,4 @@ Return: true;server1,server2,server3
 
 ### Test Cases
 1. First visit, new a session
+2. Locally not exists sid#3, retrieve from other servers

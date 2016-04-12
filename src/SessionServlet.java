@@ -95,8 +95,9 @@ public class SessionServlet extends HttpServlet {
                 String[] rpcResponse = rpcResponseStr.split(";");
                 if (rpcResponse[0].equals("true")) {
                     String message = rpcResponse[2];
-                    session = new Session();
+                    session = new Session(sessionId, versionNumber);
                     session.setMessage(message);
+                    session.update();
                     session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
                     if (session == null) {
                         renderErrorPage(request, response, "Read session remotely, and tries to write to other servers but failed");
@@ -143,25 +144,72 @@ public class SessionServlet extends HttpServlet {
     }
 
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        String cookieValue = "";
         String sessionKey = "";
         Cookie[] cookies = request.getCookies();
         if (cookies != null) {
-            sessionKey = Utils.findCookie(SessionCookie.getCookieName(), cookies);
+            cookieValue = Utils.findCookie(SessionCookie.getCookieName(), cookies);
         }
 
         if (request.getParameter("replace") != null) {       /* Replace message. */
-            String message = request.getParameter("message");
+            String replaceMessage = request.getParameter("message");
 
             Session session;
-            if (sessionKey.isEmpty()) {
-                session = new Session();
-            } else {
-                if (SessionTable.sessionTable.containsKey(sessionKey)) {
-                    session = SessionTable.sessionTable.get(sessionKey);
-                    session.setMessage(message);
+            if (cookieValue.isEmpty()) {
+                session = new Session();   // first visit, should not set message
+                System.out.println("[Servelet]: First visit, no cookie sent");
+                session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
+                if (session == null) {
+                    System.out.println("Servlet session is null. 1");
+                    renderErrorPage(request, response, "First visit, newed a session and tries to write to other servers but failed.");
+                    return;
+                }
+            } else {   // Cookie value is not empty
+                String sessionId = cookieValue.split("__")[0];
+                String versionNumber = cookieValue.split("__")[1];
+                String locationMetadataStr = cookieValue.split("__")[2];
+                sessionKey = sessionId + "#" + versionNumber;
+                session = SessionTable.sessionTable.get(sessionKey);
+
+                if (session == null) {        // can not find session locally
+                    List<Server> servers = new ArrayList<>();
+                    System.out.println("[Servlet] Session not exists locally, requesting from locationMetadata: " + locationMetadataStr);
+                    for (String serverStr : locationMetadataStr.split(",")) {
+                        String ipStr = Utils.trimIP(serverStr.split(":")[0]);
+                        String portStr = serverStr.split(":")[1];
+                        servers.add(new Server(InetAddress.getByName(ipStr), Integer.parseInt(portStr)));
+                    }
+
+                    String rpcResponseStr = rpcClient.readSession(sessionId, versionNumber, servers);
+                    System.out.println("rpcResponseStr: " + rpcResponseStr);
+                    String[] rpcResponse = rpcResponseStr.split(";");
+                    if (rpcResponse[0].equals("true")) {
+                        session = new Session(sessionId, versionNumber);
+                        session.setMessage(replaceMessage);
+                        session.update();
+                        session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
+                        if (session == null) {
+                            renderErrorPage(request, response, "Read session remotely, and tries to write to other servers but failed");
+                            return;
+                        }
+                    } else {      // read operation returns starting with "false"
+                        if (rpcResponse[1].equals("SocketTimeout")) {
+                            System.out.println("Socket Timeout!!!");
+                        } else {
+                            // other error message
+                            System.out.println("Error Message " + rpcResponse[1]);
+                        }
+                        renderErrorPage(request, response, "Read operation fails");
+                        return;
+                    }
+                } else {   // session exists locally
                     session.update();
-                } else {
-                    session = new Session();
+                    session.setMessage(replaceMessage);
+                    session = Utils.writeSessionAndCheckSuccess(rpcClient, session);
+                    if (session == null) {
+                        renderErrorPage(request, response, "Update version locally, and tries to write to other servers but failed");
+                        return;
+                    }
                 }
             }
 
@@ -171,6 +219,7 @@ public class SessionServlet extends HttpServlet {
             SessionTable.sessionTable.put(sessionKey, session);
 
             Cookie cookie = session.generateCookie();
+            cookie.setMaxAge(Session.maxAge);
             response.addCookie(cookie);
 
             request.setAttribute("sessionId", session.getSessionId());

@@ -30,15 +30,14 @@ public class Session {
     private List<Server> locationMetadata;   // 可以把改为List<String>
 
     public Session() throws UnknownHostException {
-        this(Utils.generateSessionId());
+        this(Utils.generateSessionId(), "1");
     }
 
-    public Session(String sessionId) throws UnknownHostException {
+    public Session(String sessionId, String versionNumber) throws UnknownHostException {
         this.sessionId = sessionId;
-        this.versionNumber = "1";
+        this.versionNumber = versionNumber;
         this.message = "Hello, User";
         this.locationMetadata = new ArrayList<>();
-//        this.locationMetadata.add(new Server(InetAddress.getByName("192.168.1.102"), Conf.PORT_PROJ1B_RPC));
 
         Calendar now = Calendar.getInstance();
         this.createAt = now.getTime();
@@ -62,7 +61,7 @@ public class Session {
     /**
      * Update session's version number.
      */
-    private void updateVersionNumber() {
+    public void updateVersionNumber() {
         this.versionNumber = String.valueOf(Integer.valueOf(this.versionNumber) + 1);
     }
 

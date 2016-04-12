@@ -40,7 +40,7 @@ public class SessionTable extends ConcurrentHashMap<String, Session> {
     }
 
     public void updateSession(String sessionId, String versionNumber, String message, Date discardTime) throws UnknownHostException {
-        Session session = getOrDefault(sessionId, new Session(sessionId));
+        Session session = getOrDefault(sessionId, new Session(sessionId, versionNumber));
         session.setVersionNumber(versionNumber);
         session.setMessage(message);
         session.setExpireAt(discardTime);
