@@ -25,8 +25,13 @@ public class Group {
     }
 
     public Group() throws UnknownHostException {
-        servers.add(new Server(InetAddress.getByName("192.168.1.102"), Conf.PORT_PROJ1B_RPC));
-        servers.add(new Server(InetAddress.getByName("192.168.1.108"), Conf.PORT_PROJ1B_RPC));
+        List<String> serverData = Utils.getServerData();
+        for (String item : serverData) {
+            String serverIP = item.split(",")[1];
+            servers.add(new Server(InetAddress.getByName(serverIP), Conf.PORT_PROJ1B_RPC));
+        }
+//        servers.add(new Server(InetAddress.getByName("192.168.1.102"), Conf.PORT_PROJ1B_RPC));
+//        servers.add(new Server(InetAddress.getByName("192.168.1.108"), Conf.PORT_PROJ1B_RPC));
     }
 
     public List<Server> getServers() {
