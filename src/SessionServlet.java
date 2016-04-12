@@ -14,7 +14,6 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.net.InetAddress;
-import java.nio.channels.SeekableByteChannel;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -111,7 +110,7 @@ public class SessionServlet extends HttpServlet {
                         // other error message
                         System.out.println("Error Message " + rpcResponse[1]);
                     }
-                    renderErrorPage(request, response, "Read operation fails");
+                    renderErrorPage(request, response, "Read operation fails, please try deleting the local cookie.");
                     return;
                 }
             } else {   // session exists locally
