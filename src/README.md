@@ -27,3 +27,4 @@ Return: true;server1,server2,server3
 ### Test Cases
 1. First visit, new a session
 2. Locally not exists sid#3, retrieve from other servers
+3. server1 already stores server2's session. server2 restarts, so send rpc read to server1 to retrieve previous session.
