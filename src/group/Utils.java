@@ -21,8 +21,8 @@ public class Utils {
         try {
             FileReader fileReader = new FileReader(fileName);
             BufferedReader bufferedReader = new BufferedReader(fileReader);
-            while ((line = bufferedReader.readLine().trim()) != null) {
-                serverData.add(line);
+            while ((line = bufferedReader.readLine()) != null) {
+                serverData.add(line.trim());
             }
             bufferedReader.close();
         } catch (FileNotFoundException ex) {
