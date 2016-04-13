@@ -41,6 +41,17 @@ echo -e "import json\nimport sys\n\nwith open(sys.argv[1]) as f:\n    data = jso
 > servers.txt
 echo "$ami_launch_index,$ip,$public_hostname" >> servers.txt
 
+# Download war package and server.xml
+aws s3 cp s3://cs5300hy456/project1b_war.war .
+sudo cp project1b_war.war /usr/share/tomcat8/webapps
+aws s3 cp s3://cs5300hy456/server.xml .
+sudo cp server.xml /usr/share/tomcat8/conf
+
+
+# Generate rebootnum.txt, sessionnum.txt
+# TODO
+
+
 num_servers=0
 while [[ $num_servers -ne $N ]]; do    # wait for all servers complete uploading
     aws sdb select --select-expression "select count(*) from $DOMAIN_NAME" > count.json
@@ -59,3 +70,5 @@ do
 done
 
 rm count.json data.json
+
+sudo tomcat8 start
