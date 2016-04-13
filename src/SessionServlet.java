@@ -146,7 +146,7 @@ public class SessionServlet extends HttpServlet {
         request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
         request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
         request.setAttribute("exutedServerId", exutedServerId);
-        request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookieValue));
+        request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookie.getValue()));
         request.setAttribute("cookieDomain", cookie.getDomain());
         request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     }
@@ -242,7 +242,7 @@ public class SessionServlet extends HttpServlet {
             request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
             request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
             request.setAttribute("exutedServerId", exutedServerId);
-            request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookieValue));
+            request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookie.getValue()));
             request.setAttribute("cookieDomain", cookie.getDomain());
             request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
         } else if (request.getParameter("refresh") != null) {                       /* Refresh */
