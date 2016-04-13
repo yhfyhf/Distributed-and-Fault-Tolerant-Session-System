@@ -1,6 +1,6 @@
 package group;
 
-import Conf;
+import RPC.Conf;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ public class Utils {
      */
     public static List<String> readServerData() {
         //https://www.caveofprogramming.com/java/java-file-reading-and-writing-files-in-java.html
-        String fileName = Conf.DATAFILE;
+        String fileName = Conf.SERVERS_INFO_FILEPATH;
         String line;
         List<String> serverData = new ArrayList<>();
 
@@ -39,7 +39,7 @@ public class Utils {
      * Get the reboot number from the rebootnum.txt
      */
     public static int readRebootNum() {
-        String fileName = Conf.REBOOTNUMFILE;
+        String fileName = Conf.REBOOTNUM_FILEPATH;
         String line;
         int rebootNum = 0;
 

@@ -14,6 +14,20 @@ public class Conf {
     public static final int MAX_PACKET_SIZE = 4096;
     public static final int PORT_PROJ1B_RPC = 5300;
 
-    public static final String DATAFILE = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/data.txt";
-    public static final String REBOOTNUMFILE = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/rebootnum.txt";
+    public static final String who = "aws";
+
+    public static String SERVERS_INFO_FILEPATH = null;
+    public static String REBOOTNUM_FILEPATH = null;
+    static {
+        if (who.equals("yhf")) {
+            SERVERS_INFO_FILEPATH = "/Users/yhf/Dropbox/CS5300/project1b/src/data.txt";
+            REBOOTNUM_FILEPATH = "/Users/yhf/Dropbox/CS5300/project1b/src/rebootnum.txt";
+        } else if (who.equals("jiaojiao")) {
+            SERVERS_INFO_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/data.txt";
+            REBOOTNUM_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/rebootnum.txt";
+        } else {   // AWS EC2
+            SERVERS_INFO_FILEPATH = "/home/ec2-user/data.txt";
+            REBOOTNUM_FILEPATH = "/home/ec2-user/rebootnum.txt";
+        }
+    }
 }

@@ -1,6 +1,6 @@
 package group;
 
-import Conf;
+import RPC.Conf;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -10,7 +10,7 @@ import java.util.*;
  * Created by yhf on 4/9/16.
  */
 public class Group {
-    private List<Server> servers = new ArrayList<Server>();
+    private List<Server> servers = new ArrayList<>();
     private Map<String, Server> serverTable = new HashMap();
 
     public static Group group;

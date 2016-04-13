@@ -9,7 +9,7 @@ Servers = ip:port,ip:port,ip:port
 
 ```
 Client read
-Send:   callID;Conf.SESSION_READ;sessionID;versionNumber
+Send:   callID;RPC.Conf.SESSION_READ;sessionID;versionNumber
 Return: true;CallID;message
         true;NotExists
         false;SocketTimeout
@@ -18,7 +18,7 @@ Return: true;CallID;message
 
 ```
 Client write
-Send:   callID;Conf.SESSION_WRITE;sessionId;versionNumber;message;dicardTime
+Send:   callID;RPC.Conf.SESSION_WRITE;sessionId;versionNumber;message;dicardTime
 Return: true;server1IP!serverID1,server2IP!serverID2,server3IP!server
         false;SocketTimeout
 ```

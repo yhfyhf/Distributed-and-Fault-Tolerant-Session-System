@@ -18,8 +18,8 @@ public class RPCClient {
      * Gets session from R servers chosen from WQ servers stored in location metadata,
      * and returns the first received packet.
      *
-     * outStr: callID;Conf.SESSION_READ;sessionID;versionNumber
-     * inStr: callID;Conf.SESSION_READ;sessionID;versionNumber;serverID
+     * outStr: callID;RPC.Conf.SESSION_READ;sessionID;versionNumber
+     * inStr: callID;RPC.Conf.SESSION_READ;sessionID;versionNumber;serverID
      *
      * Return: true;CallID;message;serverID
      *         true;NotExists
