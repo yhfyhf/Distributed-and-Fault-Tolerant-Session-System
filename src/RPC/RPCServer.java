@@ -1,5 +1,6 @@
 package RPC;
 
+import group.Group;
 import session.Session;
 import session.SessionTable;
 
@@ -53,7 +54,7 @@ public class RPCServer implements Runnable {
                         System.out.println("!!! Server receives a ReadSession operation.");
                         Session session = SessionTable.sessionTable.get(sessionId + "#" + versionNumber);
                         if (session != null) {
-                            outStr = callID + ";" + session.getMessage();  // TODO: What if message contains ';'
+                            outStr = callID + ";" + session.getMessage() + ";" + Group.group.getlocalServer().getServerId();  // TODO: What if message contains ';'
                             System.out.println("!!! Server receives outStr: " + outStr);
                         } else {
                             outStr = "NotExists;";
@@ -71,7 +72,7 @@ public class RPCServer implements Runnable {
 
                         System.out.println("!!! Server writes: " + message + ";" + discardTime);
                         SessionTable.sessionTable.updateSession(sessionId, versionNumber, message, discardTime);
-                        outStr = callID + ";";
+                        outStr = callID + ";" + Group.group.getlocalServer().getServerId();
                         System.out.println("!!! Not sure write successfully, outStr: " + outStr);
                         System.out.println("[Server] Now locally the session table is:");
                         for (String sessionKey : SessionTable.sessionTable.keySet()) {

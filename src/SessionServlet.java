@@ -1,5 +1,6 @@
 import RPC.RPCClient;
 import RPC.RPCServer;
+import group.Group;
 import group.Server;
 import session.Session;
 import session.SessionCookie;
@@ -13,7 +14,6 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -59,6 +59,7 @@ public class SessionServlet extends HttpServlet {
         String cookieValue = "";
         String sessionKey;
         Cookie[] cookies = request.getCookies();
+        String exutedServerId = Group.group.getlocalServer().getServerId();
         if (cookies != null) {
             cookieValue = Utils.findCookie(SessionCookie.getCookieName(), cookies);
         }
@@ -84,10 +85,10 @@ public class SessionServlet extends HttpServlet {
                 List<Server> servers = new ArrayList<>();
                 System.out.println("[Servlet] Session not exists locally, requesting from locationMetadata: " + locationMetadataStr);
                 for (String serverStr : locationMetadataStr.split(",")) {
-                    String ipStr = Utils.trimIP(serverStr.split(":")[0]);
-                    String portStr = serverStr.split(":")[1];
-                    System.out.println("ipStr: " + ipStr);
-                    servers.add(new Server(InetAddress.getByName(ipStr), Integer.parseInt(portStr)));
+                    String idStr = serverStr.split(":")[0];
+                    if (Group.group.getServerTable().containsKey(idStr)) {
+                        servers.add(Group.group.getServerTable().get(idStr));
+                    }
                 }
 
                 String rpcResponseStr = rpcClient.readSession(sessionId, versionNumber, servers);
@@ -95,6 +96,7 @@ public class SessionServlet extends HttpServlet {
                 String[] rpcResponse = rpcResponseStr.split(";");
                 if (rpcResponse[0].equals("true")) {
                     String message = rpcResponse[2];
+                    exutedServerId = rpcResponse[3].split(":")[0];
                     session = new Session(sessionId, versionNumber);
                     session.setMessage(message);
                     session.update();
@@ -132,7 +134,13 @@ public class SessionServlet extends HttpServlet {
         Cookie cookie = session.generateCookie();
         System.out.println("[Servlet] Cookie: " + cookie.getValue());
         cookie.setMaxAge(Session.maxAge);
+        cookie.setDomain("localhost");
         response.addCookie(cookie);
+
+        List<String> metadataIps = new ArrayList<>();
+        for (Server server : session.getLocationMetadata()) {
+            metadataIps.add(server.toString().split(":")[0]);
+        }
 
         request.setAttribute("sessionId", session.getSessionId());
         request.setAttribute("versionNumber", session.getVersionNumber());
@@ -140,6 +148,11 @@ public class SessionServlet extends HttpServlet {
         request.setAttribute("expireAt", session.getExpireAt());
         request.setAttribute("message", session.getMessage());
         request.setAttribute("serialCookie", cookie.getValue());
+        request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
+        request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
+        request.setAttribute("exutedServerId", exutedServerId);
+        request.setAttribute("metadata", metadataIps);
+        request.setAttribute("cookieDomain", cookie.getDomain());
         request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     }
 
@@ -147,6 +160,7 @@ public class SessionServlet extends HttpServlet {
         String cookieValue = "";
         String sessionKey = "";
         Cookie[] cookies = request.getCookies();
+        String exutedServerId = Group.group.getlocalServer().getServerId();
         if (cookies != null) {
             cookieValue = Utils.findCookie(SessionCookie.getCookieName(), cookies);
         }
@@ -175,15 +189,16 @@ public class SessionServlet extends HttpServlet {
                     List<Server> servers = new ArrayList<>();
                     System.out.println("[Servlet] Session not exists locally, requesting from locationMetadata: " + locationMetadataStr);
                     for (String serverStr : locationMetadataStr.split(",")) {
-                        String ipStr = Utils.trimIP(serverStr.split(":")[0]);
-                        String portStr = serverStr.split(":")[1];
-                        servers.add(new Server(InetAddress.getByName(ipStr), Integer.parseInt(portStr)));
+                        String idStr = serverStr.split(":")[0];
+                        if (Group.group.getServerTable().containsKey(idStr)) {
+                            servers.add(Group.group.getServerTable().get(idStr));
+                        }
                     }
-
                     String rpcResponseStr = rpcClient.readSession(sessionId, versionNumber, servers);
                     System.out.println("rpcResponseStr: " + rpcResponseStr);
                     String[] rpcResponse = rpcResponseStr.split(";");
                     if (rpcResponse[0].equals("true")) {
+                        exutedServerId = rpcResponse[3].split(":")[0];
                         session = new Session(sessionId, versionNumber);
                         session.setMessage(replaceMessage);
                         session.update();
@@ -220,7 +235,13 @@ public class SessionServlet extends HttpServlet {
 
             Cookie cookie = session.generateCookie();
             cookie.setMaxAge(Session.maxAge);
+            cookie.setDomain("localhost");
             response.addCookie(cookie);
+
+            List<String> metadataIps = new ArrayList<>();
+            for (Server server : session.getLocationMetadata()) {
+                metadataIps.add(server.toString().split(":")[0]);
+            }
 
             request.setAttribute("sessionId", session.getSessionId());
             request.setAttribute("versionNumber", session.getVersionNumber());
@@ -228,6 +249,11 @@ public class SessionServlet extends HttpServlet {
             request.setAttribute("expireAt", session.getExpireAt());
             request.setAttribute("message", session.getMessage());
             request.setAttribute("serialCookie", cookie.getValue());
+            request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
+            request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
+            request.setAttribute("exutedServerId", exutedServerId);
+            request.setAttribute("metadata", metadataIps);
+            request.setAttribute("cookieDomain", cookie.getDomain());
             request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
         } else if (request.getParameter("refresh") != null) {                       /* Refresh */
             doGet(request, response);

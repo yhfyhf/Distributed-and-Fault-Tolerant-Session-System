@@ -48,6 +48,11 @@
         <span>Cookie: ${serialCookie}</span>
         <span>Expires: ${expireAt}</span>
     </p>
+    <p>The server excuting the request  Server ID: ${localServerId}, Reboot number: ${localServerRebootNum}</p>
+    <p>The server where session data found  Server ID: ${exutedServerId}</p>
+    <p>Metadata: ${metadata}</p>
+    <p>Cookie domain: ${cookieDomain}</p>
+
 </div>
 </body>
 </html>

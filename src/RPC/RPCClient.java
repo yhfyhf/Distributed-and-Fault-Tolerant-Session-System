@@ -20,8 +20,10 @@ public class RPCClient {
      * Gets session from R servers chosen from WQ servers stored in location metadata,
      * and returns the first received packet.
      *
-     * Send:  callID;Conf.SESSION_READ;sessionID;versionNumber
-     * Return: true;CallID;message
+     * outStr: callID;Conf.SESSION_READ;sessionID;versionNumber
+     * inStr: callID;Conf.SESSION_READ;sessionID;versionNumber;serverID
+     *
+     * Return: true;CallID;message;serverID
      *         true;NotExists
      *         false;SocketTimeout
      *         false;errorMessage
@@ -78,6 +80,8 @@ public class RPCClient {
     /**
      * Writes to W servers, waits for the first WQ successful responses,
      * and sets the new cookie metadata to the set of WQ bricks that responded.
+     *
+     * inStr: callID;serverId();
      */
     public String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
             throws IOException {
@@ -117,7 +121,10 @@ public class RPCClient {
 
                 if (inStr.split(";")[0].equals(callID)) {
                     numResponded++;
-                    locations.add(new Server(recvPkt.getAddress(), recvPkt.getPort()));
+                    String serverId = inStr.split(";")[1];
+                    if (Group.group.getServerTable().containsKey(serverId)) {
+                        locations.add(Group.group.getServerTable().get(serverId));
+                    }
                 }
             } while (numResponded < Conf.WQ);
             ret = "true;";
