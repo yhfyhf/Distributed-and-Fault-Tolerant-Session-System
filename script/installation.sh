@@ -2,6 +2,7 @@
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
 DOMAIN_NAME=cs5300hy456
+N=3
 
 cd /home/ec2-user
 
@@ -38,14 +39,15 @@ echo -e "import json\nimport sys\n\nwith open(sys.argv[1]) as f:\n    data = jso
 
 # Write own server info
 > servers.txt
-echo "$ami_launch_index,$ip,$hostname" >> servers.txt
+echo "$ami_launch_index,$ip,$public_hostname" >> servers.txt
 
-sleep 5  # wait for all servers complete uploading
+num_servers=0
+while [[ $num_servers -ne $N ]]; do    # wait for all servers complete uploading
+    aws sdb select --select-expression "select count(*) from $DOMAIN_NAME" > count.json
+    num_servers=`python parse.py count.json Items 0 Attributes 0 Value`
+done
 
 # Load all servers metadata from SimpleDB
-aws sdb select --select-expression "select count(*) from $DOMAIN_NAME" > count.json
-num_servers=`python parse.py count.json Items 0 Attributes 0 Value`
-
 aws sdb select --select-expression "select * from $DOMAIN_NAME" > data.json
 
 for i in $(seq 0 $(($num_servers-1)))
