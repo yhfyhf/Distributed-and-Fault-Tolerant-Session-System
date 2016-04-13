@@ -134,7 +134,6 @@ public class SessionServlet extends HttpServlet {
         Cookie cookie = session.generateCookie();
         System.out.println("[Servlet] Cookie: " + cookie.getValue());
         cookie.setMaxAge(Session.maxAge);
-        cookie.setDomain("localhost");
         response.addCookie(cookie);
 
         request.setAttribute("sessionId", session.getSessionId());
@@ -230,7 +229,6 @@ public class SessionServlet extends HttpServlet {
 
             Cookie cookie = session.generateCookie();
             cookie.setMaxAge(Session.maxAge);
-            cookie.setDomain("localhost");
             response.addCookie(cookie);
 
             request.setAttribute("sessionId", session.getSessionId());

@@ -35,6 +35,8 @@ echo "public hostname is $public_hostname"
 
 # Upload ami-launch-index and local ip into simpledb
 aws configure set preview.sdb true
+aws sdb delete-domain --domain-name cs5300hy456
+aws sdb create-domain --domain-name cs5300hy456
 aws sdb put-attributes --domain-name $DOMAIN_NAME --item-name $ami_launch_index --attributes Name=ip,Value=$ip,Replace=true Name=hostname,Value=$public_hostname,Replace=true
 
 # generate parse.py
