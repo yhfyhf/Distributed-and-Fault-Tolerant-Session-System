@@ -1,6 +1,6 @@
 package group;
 
-import RPC.Conf;
+import Conf;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -16,7 +16,7 @@ public class Utils {
      */
     public static List<String> readServerData() {
         //https://www.caveofprogramming.com/java/java-file-reading-and-writing-files-in-java.html
-        String fileName = RPC.Conf.DATAFILE;
+        String fileName = Conf.DATAFILE;
         String line;
         List<String> serverData = new ArrayList<>();
 

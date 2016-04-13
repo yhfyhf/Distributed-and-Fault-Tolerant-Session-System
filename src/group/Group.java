@@ -1,6 +1,6 @@
 package group;
 
-import RPC.Conf;
+import Conf;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
