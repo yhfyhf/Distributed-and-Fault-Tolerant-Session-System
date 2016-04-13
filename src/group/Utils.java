@@ -35,6 +35,9 @@ public class Utils {
         return serverData;
     }
 
+    /**
+     * Get the reboot number from the rebootnum.txt
+     */
     public static int readRebootNum() {
         String fileName = Conf.REBOOTNUMFILE;
         String line;

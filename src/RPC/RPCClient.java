@@ -82,15 +82,21 @@ public class RPCClient {
      *
      * inStr: callID;serverId();
      */
-    public String writeSession(String sessionId, String versionNumber, String message, Date dicardTime)
+    public String writeSession(String sessionId, String versionNumber, String message, Date discardTime)
             throws IOException {
         // TODO: there is a delta for discardTime
         DatagramSocket rpcSocket = new DatagramSocket();
         rpcSocket.setSoTimeout(5000);
 
         String callID = UUID.randomUUID().toString();
+        /**
+         *  Δ is a constant to account for the maximum allowable difference between any pair of
+         *  server clocks plus the maximum allowable clock drift over a session timeout interval
+         *  plus the communication and processing time associated with the SessionWrite calls.
+         *  All replicas of a given version of a given session’s state should be given the same discard_time.
+         *  */
         String outStr = callID + ";" + Conf.SESSION_WRITE + ";" + sessionId + ";"
-                + versionNumber + ";" + message + ";" + dicardTime;
+                + versionNumber + ";" + message + ";" + discardTime;
         byte[] outBuf = outStr.getBytes();
 
         System.out.println("[Client] Starts to send write operation...");

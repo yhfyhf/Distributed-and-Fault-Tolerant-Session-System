@@ -1,12 +1,11 @@
 package session;
 
-import RPC.Conf;
 import RPC.RPCClient;
 import group.Group;
 import group.Server;
 
 import javax.servlet.http.Cookie;
-import java.io.*;
+import java.io.IOException;
 
 /**
  * Created by yhf on 3/17/16.
@@ -16,9 +15,7 @@ public class Utils {
 
     public static String generateSessionId() {
         Server localServer = Group.group.getlocalServer();
-        int sessionNum = readSessionNum();
-        String sessionId = localServer.getServerId() + "$" + localServer.getRebootNum() + "$" + readSessionNum();
-        writeSessionNum(sessionNum + 1);
+        String sessionId = localServer.getServerId() + "$" + localServer.getRebootNum() + "$" + SessionTable.sessionTable.size();
         return sessionId;
     }
 
@@ -65,42 +62,6 @@ public class Utils {
      */
     public static String trimIP(String ip) {
         return ip.trim().replaceAll("/", "");
-    }
-
-    public static int readSessionNum() {
-        String fileName = Conf.SESSIONNUMFILE;
-        String line;
-        int sessionNum = 0;
-
-        try {
-            FileReader fileReader = new FileReader(fileName);
-            BufferedReader bufferedReader = new BufferedReader(fileReader);
-            while ((line = bufferedReader.readLine()) != null) {
-                sessionNum = Integer.valueOf(line.trim());
-            }
-            bufferedReader.close();
-        } catch (FileNotFoundException ex) {
-            System.out.println("Unable to open file '" + fileName + "'");
-        } catch (IOException ex) {
-            System.out.println("Error reading file '" + fileName + "'");
-        }
-        return sessionNum;
-    }
-
-    public static void writeSessionNum(int sessionNum) {
-        try {
-            File file = new File(Conf.SESSIONNUMFILE);
-            // if file doesnt exists, then create it
-            if (!file.exists()) {
-                file.createNewFile();
-            }
-            FileWriter fw = new FileWriter(file.getAbsoluteFile());
-            BufferedWriter bw = new BufferedWriter(fw);
-            bw.write(String.valueOf(sessionNum));
-            bw.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     public static void main(String[] args) {

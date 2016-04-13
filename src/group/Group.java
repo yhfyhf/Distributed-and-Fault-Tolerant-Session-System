@@ -54,7 +54,6 @@ public class Group {
 
         System.out.println("num:" +  num);
         return copy.subList(0, num);
-//        return servers;
     }
 
     public Server getlocalServer() {

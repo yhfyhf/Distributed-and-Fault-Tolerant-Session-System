@@ -16,5 +16,4 @@ public class Conf {
 
     public static final String DATAFILE = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/data.txt";
     public static final String REBOOTNUMFILE = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/rebootnum.txt";
-    public static final String SESSIONNUMFILE = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/sessionnum.txt";
 }
