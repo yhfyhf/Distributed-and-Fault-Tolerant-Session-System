@@ -19,7 +19,7 @@ Return: true;CallID;message
 ```
 Client write
 Send:   callID;Conf.SESSION_WRITE;sessionId;versionNumber;message;dicardTime
-Return: true;server1,server2,server3
+Return: true;server1IP!serverID1,server2IP!serverID2,server3IP!server
         false;SocketTimeout
 ```
 
