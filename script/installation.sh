@@ -47,13 +47,12 @@ sudo cp project1b_war.war /usr/share/tomcat8/webapps
 aws s3 cp s3://cs5300hy456/server.xml .
 sudo cp server.xml /usr/share/tomcat8/conf
 
+# Generate rebootnum.txt
+echo 0 > /home/ec2-user/rebootnum.txt
 
-# Generate rebootnum.txt, sessionnum.txt
-# TODO
-
-
+# wait for all servers complete uploading
 num_servers=0
-while [[ $num_servers -ne $N ]]; do    # wait for all servers complete uploading
+while [[ $num_servers -ne $N ]]; do    
     aws sdb select --select-expression "select count(*) from $DOMAIN_NAME" > count.json
     num_servers=`python parse.py count.json Items 0 Attributes 0 Value`
 done
