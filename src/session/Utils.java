@@ -1,11 +1,10 @@
 package session;
 
 import RPC.RPCClient;
-import group.Server;
+import group.Group;
 
 import javax.servlet.http.Cookie;
 import java.io.IOException;
-import java.net.InetAddress;
 import java.util.UUID;
 
 /**
@@ -42,10 +41,11 @@ public class Utils {
             System.out.println("Servlet receives write response locations: " + serversStr);
             session.resetLocationMetada();
             for (String serverStr : serversStr) {
-                String ipStr = Utils.trimIP(serverStr.split(":")[0]);
-                String portStr = serverStr.split(":")[1];
-                System.out.println("ipStr: " + ipStr);
-                session.addLocation(new Server(InetAddress.getByName(ipStr), Integer.parseInt(portStr)));
+                String idStr = serverStr.split(":")[0];
+                System.out.println("ipStr: " + idStr);
+                if (Group.group.getServerTable().containsKey(idStr)) {
+                    session.addLocation(Group.group.getServerTable().get(idStr));
+                }
             }
             return session;
         } else {
