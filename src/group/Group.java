@@ -25,11 +25,12 @@ public class Group {
     }
 
     public Group() throws UnknownHostException {
-        List<String> serverData = Utils.getServerData();
+        List<String> serverData = Utils.readServerData();
         String serverId = serverData.get(0).split(",")[0].trim();
         String serverIP = serverData.get(0).split(",")[1].trim();
         String serverDomain = serverData.get(0).split(",")[2].trim();
         localServer = new Server(serverId, InetAddress.getByName(serverIP), Conf.PORT_PROJ1B_RPC, serverDomain);
+        localServer.setRebootNum(Utils.readRebootNum());
 
         for (int i = 1; i < serverData.size(); i++) {
             serverId = serverData.get(i).split(",")[0];

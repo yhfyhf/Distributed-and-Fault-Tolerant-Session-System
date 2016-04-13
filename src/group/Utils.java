@@ -1,5 +1,7 @@
 package group;
 
+import RPC.Conf;
+
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
@@ -12,10 +14,10 @@ public class Utils {
     /**
      * Get the server data from the data.txt, return the server data with the format "id,ip,domain"
      */
-    public static List<String> getServerData() {
+    public static List<String> readServerData() {
         //https://www.caveofprogramming.com/java/java-file-reading-and-writing-files-in-java.html
-        String fileName = "/Users/yhf/Dropbox/CS5300/project1b/src/data.txt";   // TODO: Do not hard code
-        String line = null;
+        String fileName = RPC.Conf.DATAFILE;
+        String line;
         List<String> serverData = new ArrayList<>();
 
         try {
@@ -33,8 +35,24 @@ public class Utils {
         return serverData;
     }
 
-    public static void main(String[] args) {
-        System.out.println(Utils.getServerData());
+    public static int readRebootNum() {
+        String fileName = Conf.REBOOTNUMFILE;
+        String line;
+        int rebootNum = 0;
+
+        try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                rebootNum = Integer.valueOf(line.trim());
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("Unable to open file '" + fileName + "'");
+        } catch (IOException ex) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+        return rebootNum;
     }
 
 }
