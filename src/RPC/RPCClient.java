@@ -2,8 +2,6 @@ package RPC;
 
 import group.Group;
 import group.Server;
-import session.Session;
-import session.SessionTable;
 
 import java.io.IOException;
 import java.net.DatagramPacket;
@@ -105,14 +103,11 @@ public class RPCClient {
         byte [] inBuf = new byte[Conf.MAX_PACKET_SIZE];
         DatagramPacket recvPkt = new DatagramPacket(inBuf, inBuf.length);
 
-        String sessionKey = sessionId + "#" + versionNumber;
-        Session session = SessionTable.sessionTable.get(sessionKey);
-
         String ret = "";
         try {
             int numResponded = 0;
             String inStr;
-            List<Server> locations = new ArrayList<>();
+            List<String> locations = new ArrayList<>();
             do {
                 recvPkt.setLength(inBuf.length);
                 rpcSocket.receive(recvPkt);
@@ -124,13 +119,13 @@ public class RPCClient {
                     numResponded++;
                     String serverId = inStr.split(";")[1];
                     if (Group.group.getServerTable().containsKey(serverId)) {
-                        locations.add(Group.group.getServerTable().get(serverId));
+                        locations.add(serverId);
                     }
                 }
             } while (numResponded < Conf.WQ);
             ret = "true;";
-            for (Server location : locations) {
-                ret += location + ",";
+            for (String serverId : locations) {
+                ret += serverId + ",";
             }
             ret = ret.substring(0, ret.length() - 1);
         } catch (SocketTimeoutException e) {

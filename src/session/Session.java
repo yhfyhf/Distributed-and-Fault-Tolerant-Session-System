@@ -1,10 +1,6 @@
 package session;
 
-import RPC.Conf;
-import group.Server;
-
 import javax.servlet.http.Cookie;
-import java.net.InetAddress;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -27,7 +23,7 @@ public class Session {
     private String message;
     private Date createAt;
     private Date expireAt;
-    private List<Server> locationMetadata;   // 可以把改为List<String>
+    private List<String> locationMetadata;   // 可以把改为List<String>
 
     public Session() throws UnknownHostException {
         this(Utils.generateSessionId(), "1");
@@ -111,7 +107,7 @@ public class Session {
         return expireAt;
     }
 
-    public List<Server> getLocationMetadata() {
+    public List<String> getLocationMetadata() {
         return locationMetadata;
     }
 
@@ -119,13 +115,13 @@ public class Session {
         locationMetadata = new ArrayList<>();
     }
 
-    public void addLocation(Server server) {
-        locationMetadata.add(server);
+    public void addLocation(String serverId) {
+        locationMetadata.add(serverId);
     }
 
-    public void addLocations(List<Server> servers) {
-        for (Server server : servers) {
-            addLocation(server);
+    public void addLocations(List<String> serverIds) {
+        for (String serverId : serverIds) {
+            addLocation(serverId);
         }
     }
 

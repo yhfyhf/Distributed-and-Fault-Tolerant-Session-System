@@ -42,9 +42,9 @@ public class Utils {
             session.resetLocationMetada();
             for (String serverStr : serversStr) {
                 String idStr = serverStr.split(":")[0];
-                System.out.println("ipStr: " + idStr);
+                System.out.println("idStr: " + idStr);
                 if (Group.group.getServerTable().containsKey(idStr)) {
-                    session.addLocation(Group.group.getServerTable().get(idStr));
+                    session.addLocation(idStr);
                 }
             }
             return session;

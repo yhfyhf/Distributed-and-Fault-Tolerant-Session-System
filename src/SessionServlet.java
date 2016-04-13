@@ -137,11 +137,6 @@ public class SessionServlet extends HttpServlet {
         cookie.setDomain("localhost");
         response.addCookie(cookie);
 
-        List<String> metadataIps = new ArrayList<>();
-        for (Server server : session.getLocationMetadata()) {
-            metadataIps.add(server.toString().split(":")[0]);
-        }
-
         request.setAttribute("sessionId", session.getSessionId());
         request.setAttribute("versionNumber", session.getVersionNumber());
         request.setAttribute("curTime", new Date());
@@ -151,7 +146,7 @@ public class SessionServlet extends HttpServlet {
         request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
         request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
         request.setAttribute("exutedServerId", exutedServerId);
-        request.setAttribute("metadata", metadataIps);
+        request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookieValue));
         request.setAttribute("cookieDomain", cookie.getDomain());
         request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
     }
@@ -238,11 +233,6 @@ public class SessionServlet extends HttpServlet {
             cookie.setDomain("localhost");
             response.addCookie(cookie);
 
-            List<String> metadataIps = new ArrayList<>();
-            for (Server server : session.getLocationMetadata()) {
-                metadataIps.add(server.toString().split(":")[0]);
-            }
-
             request.setAttribute("sessionId", session.getSessionId());
             request.setAttribute("versionNumber", session.getVersionNumber());
             request.setAttribute("curTime", new Date());
@@ -252,7 +242,7 @@ public class SessionServlet extends HttpServlet {
             request.setAttribute("localServerId", Group.group.getlocalServer().getServerId());
             request.setAttribute("localServerRebootNum", Group.group.getlocalServer().getRebootNum());
             request.setAttribute("exutedServerId", exutedServerId);
-            request.setAttribute("metadata", metadataIps);
+            request.setAttribute("metadata", SessionCookie.getLocationMetadata(cookieValue));
             request.setAttribute("cookieDomain", cookie.getDomain());
             request.getRequestDispatcher("/WEB-INF/index.jsp").forward(request, response);
         } else if (request.getParameter("refresh") != null) {                       /* Refresh */
