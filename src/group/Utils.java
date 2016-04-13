@@ -14,7 +14,7 @@ public class Utils {
      */
     public static List<String> getServerData() {
         //https://www.caveofprogramming.com/java/java-file-reading-and-writing-files-in-java.html
-        String fileName = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/data.txt";
+        String fileName = "/Users/yhf/Dropbox/CS5300/project1b/src/data.txt";   // TODO: Do not hard code
         String line = null;
         List<String> serverData = new ArrayList<>();
 

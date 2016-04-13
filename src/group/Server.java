@@ -5,7 +5,7 @@ import java.net.InetAddress;
 /**
  * Created by yhf on 4/9/16.
  */
-public class Server {
+public class Server {     // TODO: Update README
     private String serverId;
     private InetAddress ip;
     private int port;
