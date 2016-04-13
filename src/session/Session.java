@@ -23,7 +23,7 @@ public class Session {
     private String message;
     private Date createAt;
     private Date expireAt;
-    private List<String> locationMetadata;   // 可以把改为List<String>
+    private List<String> locationMetadata;
 
     public Session() throws UnknownHostException {
         this(Utils.generateSessionId(), "1");

@@ -1,3 +1,4 @@
+import RPC.Conf;
 import RPC.RPCClient;
 import RPC.RPCServer;
 import group.Group;
@@ -134,6 +135,9 @@ public class SessionServlet extends HttpServlet {
         Cookie cookie = session.generateCookie();
         System.out.println("[Servlet] Cookie: " + cookie.getValue());
         cookie.setMaxAge(Session.maxAge);
+        if (Conf.who.equals("aws")) {
+            setDomains(session.getLocationMetadata(), cookie);
+        }
         response.addCookie(cookie);
 
         request.setAttribute("sessionId", session.getSessionId());
@@ -229,6 +233,9 @@ public class SessionServlet extends HttpServlet {
 
             Cookie cookie = session.generateCookie();
             cookie.setMaxAge(Session.maxAge);
+            if (Conf.who.equals("aws")) {
+                setDomains(session.getLocationMetadata(), cookie);
+            }
             response.addCookie(cookie);
 
             request.setAttribute("sessionId", session.getSessionId());
@@ -284,5 +291,19 @@ public class SessionServlet extends HttpServlet {
             throws ServletException, IOException {
         request.setAttribute("error", errorMessage);
         request.getRequestDispatcher("/WEB-INF/error.jsp").forward(request, response);
+    }
+
+    /**
+     * Add domains to given cookie.
+     */
+    private void setDomains(List<String> serverIds, Cookie cookie) {
+        for (String serverId : serverIds) {
+            if (!cookie.getDomain().isEmpty()) {
+                cookie.setDomain(String.valueOf(Group.group.getServerTable().get(serverId)));
+            } else {
+                String domain = String.valueOf(Group.group.getServerTable().get(serverId));
+                cookie.setDomain(cookie.getDomain() + "," + domain);
+            }
+        }
     }
 }
