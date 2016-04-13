@@ -85,7 +85,7 @@ public class SessionServlet extends HttpServlet {
                 List<Server> servers = new ArrayList<>();
                 System.out.println("[Servlet] Session not exists locally, requesting from locationMetadata: " + locationMetadataStr);
                 for (String serverStr : locationMetadataStr.split(",")) {
-                    String idStr = serverStr.split(":")[0];
+                    String idStr = serverStr.split(":")[0].trim();
                     if (Group.group.getServerTable().containsKey(idStr)) {
                         servers.add(Group.group.getServerTable().get(idStr));
                     }
@@ -189,7 +189,7 @@ public class SessionServlet extends HttpServlet {
                     List<Server> servers = new ArrayList<>();
                     System.out.println("[Servlet] Session not exists locally, requesting from locationMetadata: " + locationMetadataStr);
                     for (String serverStr : locationMetadataStr.split(",")) {
-                        String idStr = serverStr.split(":")[0];
+                        String idStr = serverStr.split(":")[0].trim();
                         if (Group.group.getServerTable().containsKey(idStr)) {
                             servers.add(Group.group.getServerTable().get(idStr));
                         }

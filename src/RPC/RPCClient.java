@@ -45,6 +45,7 @@ public class RPCClient {
         }
 
         for (Server server : servers) {
+            System.out.println("!!!!!!read from:" + server);
             DatagramPacket sendPkt = new DatagramPacket(outBuf, outBuf.length, server.getIp(), server.getPort());
             rpcSocket.send(sendPkt);
             System.out.println("Client sent to server: " + server);
