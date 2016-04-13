@@ -3,6 +3,7 @@ KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
 DOMAIN_NAME=cs5300hy456
 N=3
+REBOOTNUM_PATH=/home/ec2-user/rebootnum.txt
 
 cd /home/ec2-user
 
@@ -48,7 +49,7 @@ aws s3 cp s3://cs5300hy456/server.xml .
 sudo cp server.xml /usr/share/tomcat8/conf
 
 # Generate rebootnum.txt
-echo 0 > /home/ec2-user/rebootnum.txt
+echo 0 > ${REBOOTNUM_PATH}
 
 # wait for all servers complete uploading
 num_servers=0
