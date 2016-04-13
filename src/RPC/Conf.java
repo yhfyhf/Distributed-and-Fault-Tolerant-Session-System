@@ -26,8 +26,8 @@ public class Conf {
             SERVERS_INFO_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/servers.txt";
             REBOOTNUM_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/rebootnum.txt";
         } else {   // AWS EC2
-            SERVERS_INFO_FILEPATH = "/home/ec2-user/servers.txt";
-            REBOOTNUM_FILEPATH = "/home/ec2-user/rebootnum.txt";
+            SERVERS_INFO_FILEPATH = "/servers.txt";
+            REBOOTNUM_FILEPATH = "/rebootnum.txt";
         }
     }
 }

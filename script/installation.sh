@@ -1,10 +1,11 @@
 #!/bin/bash
-source launch.sh    # import N
+N=1
 
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
 DOMAIN_NAME=cs5300hy456
-REBOOTNUM_PATH=/home/ec2-user/rebootnum.txt
+REBOOTNUM_PATH=/rebootnum.txt
+SERVERS_PATH=/servers.txt
 
 cd /home/ec2-user
 
@@ -40,8 +41,9 @@ aws sdb put-attributes --domain-name $DOMAIN_NAME --item-name $ami_launch_index 
 echo -e "import json\nimport sys\n\nwith open(sys.argv[1]) as f:\n    data = json.load(f)\n\nfor i in xrange(2, len(sys.argv)):\n    if isinstance(data, list):\n        data = data[int(sys.argv[i])]\n    else:\n        data = data[sys.argv[i]]\n\nprint data.strip()" > parse.py
 
 # Write own server info
-> servers.txt
-echo "$ami_launch_index,$ip,$public_hostname" >> servers.txt
+> ${SERVERS_PATH}
+chmod 777 ${SERVERS_PATH}
+echo "$ami_launch_index,$ip,$public_hostname" >> ${SERVERS_PATH}
 
 # Download war package and server.xml
 aws s3 cp s3://cs5300hy456/project1b_war.war .
@@ -52,6 +54,7 @@ sudo rm -rf /usr/share/tomcat8/webapps/ROOT
 
 # Generate rebootnum.txt
 echo 0 > ${REBOOTNUM_PATH}
+chmod 777 ${REBOOTNUM_PATH}
 
 # wait for all servers complete uploading
 num_servers=0
@@ -68,7 +71,7 @@ do
     ami_launch_index=`python parse.py data.json Items $i Name`
     hostname=`python parse.py data.json Items $i Attributes 0 Value`
     ip=`python parse.py data.json Items $i Attributes 1 Value`
-    echo "$ami_launch_index,$ip,$hostname" >> servers.txt
+    echo "$ami_launch_index,$ip,$hostname" >> ${SERVERS_PATH}
 done
 
 rm count.json data.json
