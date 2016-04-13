@@ -48,6 +48,10 @@ public class Group {
     public List<Server> getRandomServers(int num) {
         List<Server> copy = new ArrayList<>(servers);
         Collections.shuffle(copy);
+        System.out.println("copy size:" +  copy.size());
+        System.out.println("Server" +  servers);
+
+        System.out.println("num:" +  num);
         return copy.subList(0, num);
 //        return servers;
     }
