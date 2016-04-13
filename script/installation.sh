@@ -1,8 +1,9 @@
 #!/bin/bash
+source launch.sh    # import N
+
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
 DOMAIN_NAME=cs5300hy456
-N=3
 REBOOTNUM_PATH=/home/ec2-user/rebootnum.txt
 
 cd /home/ec2-user
@@ -47,6 +48,7 @@ aws s3 cp s3://cs5300hy456/project1b_war.war .
 sudo cp project1b_war.war /usr/share/tomcat8/webapps
 aws s3 cp s3://cs5300hy456/server.xml .
 sudo cp server.xml /usr/share/tomcat8/conf
+sudo rm -rf /usr/share/tomcat8/webapps/ROOT
 
 # Generate rebootnum.txt
 echo 0 > ${REBOOTNUM_PATH}
@@ -71,4 +73,4 @@ done
 
 rm count.json data.json
 
-sudo tomcat8 start
+sudo service tomcat8 start

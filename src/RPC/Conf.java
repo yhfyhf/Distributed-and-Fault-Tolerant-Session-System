@@ -20,13 +20,13 @@ public class Conf {
     public static String REBOOTNUM_FILEPATH = null;
     static {
         if (who.equals("yhf")) {
-            SERVERS_INFO_FILEPATH = "/Users/yhf/Dropbox/CS5300/project1b/src/data.txt";
+            SERVERS_INFO_FILEPATH = "/Users/yhf/Dropbox/CS5300/project1b/src/servers.txt";
             REBOOTNUM_FILEPATH = "/Users/yhf/Dropbox/CS5300/project1b/src/rebootnum.txt";
         } else if (who.equals("jiaojiao")) {
-            SERVERS_INFO_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/data.txt";
+            SERVERS_INFO_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/servers.txt";
             REBOOTNUM_FILEPATH = "/Users/Christina/DropBox/Courses/CS5300/project/pro1b/src/rebootnum.txt";
         } else {   // AWS EC2
-            SERVERS_INFO_FILEPATH = "/home/ec2-user/data.txt";
+            SERVERS_INFO_FILEPATH = "/home/ec2-user/servers.txt";
             REBOOTNUM_FILEPATH = "/home/ec2-user/rebootnum.txt";
         }
     }
