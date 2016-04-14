@@ -25,6 +25,12 @@ public class Group {
     }
 
     public Group() throws UnknownHostException {
+        List<Integer> fAndN = Utils.readFAndN();
+        if (fAndN.size() != 0) {
+            Conf.F = fAndN.get(0);
+            Conf.N = fAndN.get(1);
+        }
+
         List<String> serverData = Utils.readServerData();
         String serverId = serverData.get(0).split(",")[0].trim();
         String serverIP = serverData.get(0).split(",")[1].trim();
