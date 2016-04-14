@@ -58,4 +58,26 @@ public class Utils {
         return rebootNum;
     }
 
+    /**
+     * Get F from the f.txt
+     * */
+    public static List<Integer> readFAndN() {
+        String fileName = Conf.FANDN_FILEPATH;
+        String line;
+        List ret = new ArrayList<>();
+        try {
+            FileReader fileReader = new FileReader(fileName);
+            BufferedReader bufferedReader = new BufferedReader(fileReader);
+            while ((line = bufferedReader.readLine()) != null) {
+                ret.add(Integer.valueOf(line.trim()));
+            }
+            bufferedReader.close();
+        } catch (FileNotFoundException ex) {
+            System.out.println("Unable to open file '" + fileName + "'");
+        } catch (IOException ex) {
+            System.out.println("Error reading file '" + fileName + "'");
+        }
+
+        return ret;
+    }
 }
