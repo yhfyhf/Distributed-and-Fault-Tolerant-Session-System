@@ -54,7 +54,7 @@ public class RPCServer implements Runnable {
                         System.out.println("!!! Server receives a ReadSession operation.");
                         Session session = SessionTable.sessionTable.get(sessionId + "#" + versionNumber);
                         if (session != null) {
-                            outStr = callID + ";" + session.getMessage() + ";" + Group.group.getlocalServer().getServerId();  // TODO: What if message contains ';'
+                            outStr = callID + ";" + session.getMessage() + ";" + Group.group.getlocalServer().getServerId();
                             System.out.println("!!! Server receives outStr: " + outStr);
                         } else {
                             outStr = "NotExists;";
