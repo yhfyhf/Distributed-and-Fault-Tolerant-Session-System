@@ -28,3 +28,4 @@ Return: true;server1IP!serverID1,server2IP!serverID2,server3IP!server
 1. First visit, new a session
 2. Locally not exists sid#3, retrieve from other servers
 3. server1 already stores server2's session. server2 restarts, so send rpc read to server1 to retrieve previous session.
+4. Test reboot number

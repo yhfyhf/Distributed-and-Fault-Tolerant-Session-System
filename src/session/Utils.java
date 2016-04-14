@@ -6,6 +6,8 @@ import group.Server;
 
 import javax.servlet.http.Cookie;
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
 
 /**
  * Created by yhf on 3/17/16.
@@ -36,7 +38,13 @@ public class Utils {
      * Send RPC writeSession request, add locations to session, and check if it successes.
      */
     public static Session writeSessionAndCheckSuccess(RPCClient rpcClient, Session session) throws IOException {
-        String rpcResponseStr = rpcClient.writeSession(session.getSessionId(), session.getVersionNumber(), session.getMessage(), session.getExpireAt());
+        Date discardTime = session.getExpireAt();
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(discardTime);
+        calendar.add(Calendar.MILLISECOND, Session.delta);
+        discardTime = calendar.getTime();
+        String rpcResponseStr = rpcClient.writeSession(session.getSessionId(), session.getVersionNumber(),
+                session.getMessage(), discardTime);
         String[] rpcResponse = rpcResponseStr.split(";");
         if (rpcResponse[0].equals("true")) {
             String[] serversStr = rpcResponse[1].split(",");
