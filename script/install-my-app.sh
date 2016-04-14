@@ -1,11 +1,13 @@
 #!/bin/bash
 N=3
+F=1
 
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
 DOMAIN_NAME=cs5300hy456
 REBOOTNUM_PATH=/rebootnum.txt
 SERVERS_PATH=/servers.txt
+
 
 cd /home/ec2-user
 
@@ -52,11 +54,16 @@ sudo cp project1b.war /usr/share/tomcat8/webapps
 # sudo cp server.xml /usr/share/tomcat8/conf
 sudo rm -rf /usr/share/tomcat8/webapps/ROOT
 
+aws s3 cp s3://cs5300hy456/install-my-app.sh .
+sudo chmod +x install-my-app.sh
+sudo cp install-my-app.sh /
 
 aws s3 cp s3://cs5300hy456/reboot.sh .
 sudo chmod +x reboot.sh
 sudo cp reboot.sh /
 
+sudo echo -e "$N\n$F" > "/NF.txt"
+sudo chmod 777 /NF.txt
 
 # Generate rebootnum.txt if not exists, else do nothing, which means it's recovering from installation failure
 if [ -f ${REBOOTNUM_PATH} ]
