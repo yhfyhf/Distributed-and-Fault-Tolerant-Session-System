@@ -117,6 +117,8 @@ Installs all the tools needed on each server, and generates the configuration fi
 
 It is implemented. We used a file to the writes N and F to disk, which can be read from the Java code.
 
+**You need to configure N and F in install-my-app.sh**
+
 
 ### Installation Script Failure
 
