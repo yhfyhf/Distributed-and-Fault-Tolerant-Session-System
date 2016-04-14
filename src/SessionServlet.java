@@ -136,7 +136,7 @@ public class SessionServlet extends HttpServlet {
         System.out.println("[Servlet] Cookie: " + cookie.getValue());
         cookie.setMaxAge(Session.maxAge);
         if (Conf.who.equals("aws")) {
-            setDomains(session.getLocationMetadata(), cookie);
+            cookie.setDomain(".hy456.bigdata.systems");
         }
         response.addCookie(cookie);
 
@@ -234,7 +234,7 @@ public class SessionServlet extends HttpServlet {
             Cookie cookie = session.generateCookie();
             cookie.setMaxAge(Session.maxAge);
             if (Conf.who.equals("aws")) {
-                setDomains(session.getLocationMetadata(), cookie);
+                cookie.setDomain(".hy456.bigdata.systems");
             }
             response.addCookie(cookie);
 

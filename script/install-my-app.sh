@@ -46,11 +46,16 @@ chmod 777 ${SERVERS_PATH}
 echo "$ami_launch_index,$ip,$public_hostname" >> ${SERVERS_PATH}
 
 # Download war package and server.xml
-aws s3 cp s3://cs5300hy456/project1b_war.war .
-sudo cp project1b_war.war /usr/share/tomcat8/webapps
-aws s3 cp s3://cs5300hy456/server.xml .
-sudo cp server.xml /usr/share/tomcat8/conf
+aws s3 cp s3://cs5300hy456/project1b.war .
+sudo cp project1b.war /usr/share/tomcat8/webapps
+# aws s3 cp s3://cs5300hy456/server.xml .
+# sudo cp server.xml /usr/share/tomcat8/conf
 sudo rm -rf /usr/share/tomcat8/webapps/ROOT
+
+# Download reboot.sh
+aws s3 cp s3://cs5300hy456/reboot.sh .
+sudo chmod +x reboot.sh
+sudo cp reboot.sh ${REBOOTNUM_PATH}
 
 # Generate rebootnum.txt
 echo 0 > ${REBOOTNUM_PATH}
