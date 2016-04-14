@@ -59,10 +59,10 @@ public class Utils {
     }
 
     /**
-     * Get F from the f.txt
+     * Get N, F from NF.txt.
      * */
     public static List<Integer> readFAndN() {
-        String fileName = Conf.FANDN_FILEPATH;
+        String fileName = Conf.NF_FILEPATH;
         String line;
         List ret = new ArrayList<>();
         try {
