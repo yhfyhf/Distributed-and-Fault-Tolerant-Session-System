@@ -23,7 +23,7 @@
 <body>
 <div class="main">
     <p>
-        <span>NetID: hy456, yx339</span>
+        <span>NetID: hy456, yx339, hl955</span>
         <span>Session: ${sessionId}</span>
         <span>Version: ${versionNumber}</span>
         <span>Current Date: ${curTime}</span>

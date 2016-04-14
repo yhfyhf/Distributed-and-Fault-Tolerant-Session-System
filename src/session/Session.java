@@ -16,7 +16,7 @@ import java.util.List;
  */
 public class Session {
 
-    public static final int maxAge = 6000;
+    public static final int maxAge = 60;
     public static final int delta = 100;
 
     private String sessionId;

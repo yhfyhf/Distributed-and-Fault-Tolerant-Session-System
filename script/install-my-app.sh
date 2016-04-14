@@ -1,5 +1,5 @@
 #!/bin/bash
-N=2
+N=3
 
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
@@ -52,14 +52,22 @@ sudo cp project1b.war /usr/share/tomcat8/webapps
 # sudo cp server.xml /usr/share/tomcat8/conf
 sudo rm -rf /usr/share/tomcat8/webapps/ROOT
 
-# Download reboot.sh
+
 aws s3 cp s3://cs5300hy456/reboot.sh .
 sudo chmod +x reboot.sh
-sudo cp reboot.sh ${REBOOTNUM_PATH}
+sudo cp reboot.sh /
 
-# Generate rebootnum.txt
-echo 0 > ${REBOOTNUM_PATH}
-chmod 777 ${REBOOTNUM_PATH}
+
+# Generate rebootnum.txt if not exists, else do nothing, which means it's recovering from installation failure
+if [ -f ${REBOOTNUM_PATH} ]
+    then
+        echo "rebootnum.txt already exists."
+    else
+        # Generate rebootnum.txt
+        echo 0 > ${REBOOTNUM_PATH}
+        chmod 777 ${REBOOTNUM_PATH}
+fi
+
 
 # wait for all servers complete uploading
 num_servers=0
