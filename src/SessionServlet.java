@@ -298,11 +298,13 @@ public class SessionServlet extends HttpServlet {
      */
     private void setDomains(List<String> serverIds, Cookie cookie) {
         for (String serverId : serverIds) {
-            if (!cookie.getDomain().isEmpty()) {
+            if (cookie.getDomain() == null) {
                 cookie.setDomain(String.valueOf(Group.group.getServerTable().get(serverId)));
             } else {
-                String domain = String.valueOf(Group.group.getServerTable().get(serverId));
-                cookie.setDomain(cookie.getDomain() + "," + domain);
+                for (int i =0; i < Group.group.getServers().size(); i++) {
+                    String domain = "server" + String.valueOf(i) + "hy456.bigdata.systems";
+                    cookie.setDomain(cookie.getDomain() + "," + domain);
+                }
             }
         }
     }
