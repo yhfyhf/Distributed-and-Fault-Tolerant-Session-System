@@ -1,7 +1,9 @@
 #!/bin/bash
 
-source install-my-app.sh  # import N from install-my-app.sh
+source config.sh  # import N and F
 
 aws ec2 run-instances --image-id ami-08111162 --count ${N} --instance-type t2.micro --key-name us-east1-keypair --security-groups yhf_SG_useast --user-data file://install-my-app.sh --region us-east-1
 aws s3 cp ../out/artifacts/project1b/project1b.war s3://cs5300hy456
+aws s3 cp config.sh s3://cs5300hy456
 aws s3 cp reboot.sh s3://cs5300hy456
+aws s3 cp install-my-app.sh s3://cs5300hy456

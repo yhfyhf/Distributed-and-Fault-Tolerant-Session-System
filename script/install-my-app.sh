@@ -1,6 +1,5 @@
 #!/bin/bash
-N=3
-F=1
+source config.sh  # import N and F
 
 KEY_ID=AKIAJ74UNLVZ6ISVOYFQ
 KEY_VAL=7/G6b1/IKfzfK6r/HdkHnyrWjX6bvGh0pJEud8j2
@@ -57,6 +56,9 @@ sudo rm -rf /usr/share/tomcat8/webapps/ROOT
 aws s3 cp s3://cs5300hy456/install-my-app.sh .
 sudo chmod +x install-my-app.sh
 sudo cp install-my-app.sh /
+
+aws s3 cp s3://cs5300hy456/config.sh .
+sudo cp config.sh /
 
 aws s3 cp s3://cs5300hy456/reboot.sh .
 sudo chmod +x reboot.sh
