@@ -1,4 +1,4 @@
-```
+<!--```
 Server = IP:Port
 RPC message = flag;CallID;OperationCode;sessionId;
 Cookie Value = sessionId__versionNumber__locationMetadata
@@ -30,7 +30,7 @@ Return: true;server1IP!serverID1,server2IP!serverID2,server3IP!server
 3. server1 already stores server2's session. server2 restarts, so send rpc read to server1 to retrieve previous session.
 4. Test reboot number
 
-
+-->
 
 
 # Overall Structure
@@ -101,6 +101,9 @@ It is a txt file to store the reboot times.
 ### servers.txt 
 It is a txt file to store all the server information.
 
+### NF.txt
+Stores values of N and F.
+
 ### index.jsp
 It is a jsp file to render HTML file, displaying the session information.
 
@@ -110,6 +113,8 @@ Launches all the instances.
 ### install-my-app.sh
 Installs all the tools needed on each server, and generates the configuration files.
 
+Node: All txt files and scripts will be at the root directory on each EC2 instance.
+
 
 # Extra Credit
 
@@ -117,8 +122,25 @@ Installs all the tools needed on each server, and generates the configuration fi
 
 It is implemented. We used a file to the writes N and F to disk, which can be read from the Java code.
 
-**You need to configure N and F in install-my-app.sh**
+**You need to configure N and F in install-my-app.sh and launch.sh**
 
+In my test case, when N = 4, F = 2.
+
+After replacing message, the executing server is 2:
+
+<img src="/Users/yhf/Desktop/screenshot1.png">
+
+Reboot server 2, it can still retrive the session:
+
+<img src="/Users/yhf/Desktop/screenshot2.png">
+
+Bacause the session is stored in server 1 and 2, I reboot server 0 and 2, and I visit server 1, now the session is stored in server 1 and 3:
+
+<img src="/Users/yhf/Desktop/screenshot3.png">
+
+The session is timeout.
+
+<img src="/Users/yhf/Desktop/screenshot4.png">
 
 ### Installation Script Failure
 
