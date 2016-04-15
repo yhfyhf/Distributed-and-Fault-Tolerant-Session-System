@@ -61,7 +61,7 @@ public class Utils {
     /**
      * Get N, F from NF.txt.
      * */
-    public static List<Integer> readFAndN() {
+    public static List<Integer> readNAndF() {
         String fileName = Conf.NF_FILEPATH;
         String line;
         List ret = new ArrayList<>();

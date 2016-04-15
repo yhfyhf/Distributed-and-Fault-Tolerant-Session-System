@@ -25,10 +25,13 @@ public class Group {
     }
 
     public Group() throws UnknownHostException {
-        List<Integer> fAndN = Utils.readFAndN();
+        List<Integer> fAndN = Utils.readNAndF();
         if (fAndN.size() != 0) {
-            Conf.F = fAndN.get(0);
-            Conf.N = fAndN.get(1);
+            Conf.N = fAndN.get(0);
+            Conf.F = fAndN.get(1);
+            Conf.W = Conf.N;
+            Conf.WQ = Conf.W - Conf.F;
+            Conf.R = Conf.WQ;
         }
 
         List<String> serverData = Utils.readServerData();
