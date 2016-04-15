@@ -6,4 +6,4 @@ lib/
 src/data.txt
 *.pem
 *.pdf
-
+*.zip
