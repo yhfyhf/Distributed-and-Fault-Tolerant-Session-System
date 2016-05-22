@@ -1,9 +1,5 @@
 # A Distributed, Scalable and Fault-tolerant Session System
 
-### Test Cases
-1. First visit, new a session
-
-# Overall Structure
 
 ### Flow
 
@@ -21,7 +17,7 @@ tries to retrive it locally. If the session does not exists locally, the server 
 
 **locationMetadata:** "serverId1,serverId2,..."
 
-**sessionId:** "serverId\$rebootnum\$sessionnum"
+**sessionId:** "serverId$rebootnum$sessionnum"
 
 ### RPC message format
 #### ReadSession 
@@ -85,38 +81,3 @@ Installs all the tools needed on each server, and generates the configuration fi
 
 Node: All txt files and scripts will be at the root directory on each EC2 instance.
 
-
-# Extra Credit
-
-### Supporting F > 1 Failures
-
-It is implemented. We used a file to the writes N and F to disk, which can be read from the Java code.
-
-**You need to configure N and F in install-my-app.sh and launch.sh**
-
-In my test case, when N = 4, F = 2.
-
-After replacing message, the executing server is 2:
-
-<img src="/Users/yhf/Desktop/screenshot1.png">
-
-Reboot server 2, it can still retrive the session:
-
-<img src="/Users/yhf/Desktop/screenshot2.png">
-
-Bacause the session is stored in server 1 and 2, I reboot server 0 and 2, and I visit server 1, now the session is stored in server 1 and 3:
-
-<img src="/Users/yhf/Desktop/screenshot3.png">
-
-The session is timeout.
-
-<img src="/Users/yhf/Desktop/screenshot4.png">
-
-### Installation Script Failure
-
-It is implemented too. The server can recover from the installation failure. Most of operations in the installation script can be overwritten. Some points that are considered:
-
-1. After rebooting, we are not running the installation script as root user. So I added "sudo" for operations that need permissions.
-2. If the server's information is not uploaded to SimpleDB due to failure, other servers keep waiting for SimpleDB (blocks) before downloading all the servers' information. 
-
-After rebooting, just re-run the install-my-app.sh script.
